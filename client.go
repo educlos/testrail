@@ -57,11 +57,16 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode > 299 {
+		return fmt.Errorf("Status: " + resp.Status)
+	}
+
 	jsonCnt, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println(string(jsonCnt))
 	if v != nil {
 		err = json.Unmarshal(jsonCnt, v)
 		if err != nil {
