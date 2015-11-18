@@ -15,8 +15,8 @@ type Milestone struct {
 
 type SendableMilestone struct {
 	Name        string `json:"name"`
-	Description string `json:"description"`
-	DueOn       int    `json:"due_on"`
+	Description string `json:"description,omitempty"`
+	DueOn       int    `json:"due_on,omitempty"`
 }
 
 // Returns the existing milestone milestoneID
@@ -55,11 +55,4 @@ func (c *Client) UpdateMilestone(milestoneID int, updates SendableMilestone) (Mi
 // Deletes the existing milestone milestoneID
 func (c *Client) DeleteMilestone(milestoneID int) error {
 	return c.sendRequest("POST", "delete_milestone/"+strconv.Itoa(milestoneID), nil, nil)
-}
-
-func btoitos(b bool) string {
-	if b {
-		return "1"
-	}
-	return "0"
 }

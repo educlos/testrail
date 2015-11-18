@@ -1,6 +1,9 @@
 package testrail
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type Case struct {
 	CreatedBy            int          `json:"created_by"`
@@ -28,7 +31,7 @@ type CustomStep struct {
 	Expected string `json:"expected"`
 }
 
-type RequestFilter struct {
+type RequestFilterForCases struct {
 	CreatedAfter  string `json:"created_after"`
 	CreatedBefore string `json:"created_before"`
 	CreatedBy     []int  `json:"created_by"`
@@ -42,22 +45,22 @@ type RequestFilter struct {
 
 type SendableCase struct {
 	Title       string       `json:"title"`
-	TypeId      int          `json:"type_id"`
-	PriorityId  int          `json:"priority_id"`
-	Estimate    string       `json:"estimate"`
-	MilestoneId int          `json:"milestone_id"`
-	Refs        string       `json:"refs"`
-	Checkbox    bool         `json:"custom_checkbox"`
-	Date        string       `json:"custom_date"`
-	Dropdown    int          `json:"custom_dropdown"`
-	Integer     int          `json:"custom_integer"`
-	Milestone   int          `json:"custom_milestone"`
-	MultiSelect []int        `json:"custom_multi-select"`
-	Steps       []CustomStep `json:"custom_steps"`
-	String      string       `json:"custom_string"`
-	Text        string       `json:"custom_text`
-	URL         string       `json:"custom_url`
-	User        int          `json:"custom_user"`
+	TypeId      int          `json:"type_id,omitempty"`
+	PriorityId  int          `json:"priority_id,omitempty"`
+	Estimate    string       `json:"estimate,omitempty"`
+	MilestoneId int          `json:"milestone_id,omitempty"`
+	Refs        string       `json:"refs,omitempty"`
+	Checkbox    bool         `json:"custom_checkbox,omitempty"`
+	Date        string       `json:"custom_date,omitempty"`
+	Dropdown    int          `json:"custom_dropdown,omitempty"`
+	Integer     int          `json:"custom_integer,omitempty"`
+	Milestone   int          `json:"custom_milestone,omitempty"`
+	MultiSelect []int        `json:"custom_multi-select,omitempty"`
+	Steps       []CustomStep `json:"custom_steps,omitempty"`
+	String      string       `json:"custom_string,omitempty"`
+	Text        string       `json:"custom_text,omitempty"`
+	URL         string       `json:"custom_url,omitempty"`
+	User        int          `json:"custom_user,omitempty"`
 }
 
 // Returns the existing test case caseID
@@ -67,7 +70,7 @@ func (c *Client) GetCase(caseID int) (Case, error) {
 	return returnCase, err
 }
 
-// Returns a list of test cases for a test suite or specific section in a test suite.
+// Returns a list of test cases for a test suite or specific section in a test suite
 func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, error) {
 	uri := "get_cases/" + strconv.Itoa(projectID) + "&suite_id=" + strconv.Itoa(suiteID)
 	if len(sectionID) > 0 {
@@ -75,6 +78,19 @@ func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, err
 	}
 
 	returnCases := []Case{}
+	err := c.sendRequest("GET", uri, nil, &returnCases)
+	return returnCases, err
+}
+
+// Returns a list of test cases for a test suite validating the filters
+func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) ([]Case, error) {
+	uri := "get_cases/" + strconv.Itoa(projectID) + "&suite_id=" + strconv.Itoa(suiteID)
+	if len(filters) > 0 {
+		uri = applyFiltersForCase(uri, filters[0])
+	}
+
+	returnCases := []Case{}
+	fmt.Println(uri)
 	err := c.sendRequest("GET", uri, nil, &returnCases)
 	return returnCases, err
 }
@@ -96,4 +112,36 @@ func (c *Client) UpdateCase(caseID int, updates SendableCase) (Case, error) {
 // Deletes the existing test case caseID
 func (c *Client) DeleteCase(caseID int) error {
 	return c.sendRequest("POST", "delete_case/"+strconv.Itoa(caseID), nil, nil)
+}
+
+func applyFiltersForCase(uri string, filters RequestFilterForCases) string {
+	if filters.CreatedAfter != "" {
+		uri = uri + "&created_after=" + filters.CreatedAfter
+	}
+	if filters.CreatedBefore != "" {
+		uri = uri + "&created_before=" + filters.CreatedBefore
+	}
+	if len(filters.CreatedBy) != 0 {
+		uri = applySpecificFilter(uri, "created_by", filters.CreatedBy)
+	}
+	if len(filters.MilestoneId) != 0 {
+		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneId)
+	}
+	if len(filters.PriorityId) != 0 {
+		uri = applySpecificFilter(uri, "priority_id", filters.PriorityId)
+	}
+	if len(filters.TypeId) != 0 {
+		uri = applySpecificFilter(uri, "type_id", filters.TypeId)
+	}
+	if filters.UpdatedAfter != "" {
+		uri = uri + "&updated_after=" + filters.UpdatedAfter
+	}
+	if filters.UpdatedBefore != "" {
+		uri = uri + "&updated_before=" + filters.UpdatedBefore
+	}
+	if len(filters.UpdatedBy) != 0 {
+		uri = applySpecificFilter(uri, "updated_by", filters.UpdatedBy)
+	}
+
+	return uri
 }
