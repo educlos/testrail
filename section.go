@@ -57,13 +57,6 @@ func (c *Client) UpdateSection(sectionID int, update UpdatableSection) (Section,
 	return updatedSection, err
 }
 
-// Close the existing test section sectionID and archives its tests & results
-func (c *Client) CloseSection(sectionID int) (Section, error) {
-	closedSection := Section{}
-	err := c.sendRequest("POST", "close_section/"+strconv.Itoa(sectionID), nil, &closedSection)
-	return closedSection, err
-}
-
 // Delete the existing test section sectionID
 func (c *Client) DeleteSection(sectionID int) error {
 	return c.sendRequest("POST", "delete_section/"+strconv.Itoa(sectionID), nil, nil)
