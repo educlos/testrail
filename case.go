@@ -15,13 +15,13 @@ type Case struct {
 	Estimate             string       `json:"estimate"`
 	EstimateForecast     string       `json:"estimate_forecast"`
 	ID                   int          `json"id"`
-	MilestoneId          int          `json:"milestone_id"`
-	PriorityId           int          `json:"priority_id"`
+	MilestoneID          int          `json:"milestone_id"`
+	PriorityID           int          `json:"priority_id"`
 	Refs                 string       `json:"refs"`
-	SectionId            int          `json:"section_id"`
-	SuiteId              int          `json:"suite_id"`
+	SectionID            int          `json:"section_id"`
+	SuiteID              int          `json:"suite_id"`
 	Title                string       `json:"title"`
-	TypeId               int          `json:"type_id"`
+	TypeID               int          `json:"type_id"`
 	UpdatedBy            int          `json:"updated_by"`
 	UdpatedOn            int          `json:"updated_on"`
 }
@@ -35,9 +35,9 @@ type RequestFilterForCases struct {
 	CreatedAfter  string `json:"created_after"`
 	CreatedBefore string `json:"created_before"`
 	CreatedBy     []int  `json:"created_by"`
-	MilestoneId   []int  `json:"milestone_id"`
-	PriorityId    []int  `json:"priority_id"`
-	TypeId        []int  `json:"type_id"`
+	MilestoneID   []int  `json:"milestone_id"`
+	PriorityID    []int  `json:"priority_id"`
+	TypeID        []int  `json:"type_id"`
 	UpdatedAfter  string `json:"updated_after"`
 	UpdatedBefore string `json:"updated_before"`
 	UpdatedBy     []int  `json:"updated_by"`
@@ -45,10 +45,10 @@ type RequestFilterForCases struct {
 
 type SendableCase struct {
 	Title       string       `json:"title"`
-	TypeId      int          `json:"type_id,omitempty"`
-	PriorityId  int          `json:"priority_id,omitempty"`
+	TypeID      int          `json:"type_id,omitempty"`
+	PriorityID  int          `json:"priority_id,omitempty"`
 	Estimate    string       `json:"estimate,omitempty"`
-	MilestoneId int          `json:"milestone_id,omitempty"`
+	MilestoneID int          `json:"milestone_id,omitempty"`
 	Refs        string       `json:"refs,omitempty"`
 	Checkbox    bool         `json:"custom_checkbox,omitempty"`
 	Date        string       `json:"custom_date,omitempty"`
@@ -124,14 +124,14 @@ func applyFiltersForCase(uri string, filters RequestFilterForCases) string {
 	if len(filters.CreatedBy) != 0 {
 		uri = applySpecificFilter(uri, "created_by", filters.CreatedBy)
 	}
-	if len(filters.MilestoneId) != 0 {
-		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneId)
+	if len(filters.MilestoneID) != 0 {
+		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneID)
 	}
-	if len(filters.PriorityId) != 0 {
-		uri = applySpecificFilter(uri, "priority_id", filters.PriorityId)
+	if len(filters.PriorityID) != 0 {
+		uri = applySpecificFilter(uri, "priority_id", filters.PriorityID)
 	}
-	if len(filters.TypeId) != 0 {
-		uri = applySpecificFilter(uri, "type_id", filters.TypeId)
+	if len(filters.TypeID) != 0 {
+		uri = applySpecificFilter(uri, "type_id", filters.TypeID)
 	}
 	if filters.UpdatedAfter != "" {
 		uri = uri + "&updated_after=" + filters.UpdatedAfter

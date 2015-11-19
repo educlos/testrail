@@ -29,38 +29,14 @@ type Entry struct {
 	SuiteID int    `json:"suite_id"`
 }
 
-type Run struct {
-	AssignedToID  int    `json:"assignedto_id"`
-	BlockedCount  int    `json:"blocked_count"`
-	CompletedOn   int    `json:"completed_on"`
-	Config        string `json:"config"`
-	ConfigIDs     []int  `json:"config_ids"`
-	Description   string `json:"description"`
-	EntryID       string `json:"entry_id"`
-	EntryIndex    int    `json:"entry_index"`
-	FailedCount   int    `json:"failed_count"`
-	ID            int    `json:"id"`
-	IncludeAll    bool   `json:"include_all"`
-	IsCompleted   bool   `json:"is_completed"`
-	MilestoneID   int    `json:"milestone_id"`
-	Name          string `json:"name"`
-	PassedCount   int    `json:"passed_count"`
-	PlanID        int    `json:"plan_id"`
-	ProjectID     int    `json:"project_id"`
-	RetestCount   int    `json:"retest_count"`
-	SuiteID       int    `json:"suite_id"`
-	UntestedCount int    `json:"untested_count"`
-	URL           string `json:"url"`
-}
-
 type RequestFilterForPlan struct {
 	CreatedAfter  string `json:"created_after"`
 	CreatedBefore string `json:"created_before"`
 	CreatedBy     []int  `json:"created_by"`
 	IsCompleted   *bool  `json:"is_completed"`
 	Limit         *int   `json:"limit"`
-	Offest        *int   `json:"offset"`
-	MilestoneId   []int  `json:"milestone_id"`
+	Offset        *int   `json:"offset"`
+	MilestoneID   []int  `json:"milestone_id"`
 }
 
 type SendablePlan struct {
@@ -75,8 +51,8 @@ type SendableEntries struct {
 	Name         string `json:"name,omitempty"`
 	AssignedtoID int    `json:"assignedto_id,omitempty"`
 	IncludeAll   bool   `json:"include_all,omitempty"`
-	CaseIds      []int  `json:"case_ids,omitempty"`
-	ConfigIds    []int  `json:"config_ids,omitempty"`
+	CaseIDs      []int  `json:"case_ids,omitempty"`
+	ConfigIDs    []int  `json:"config_ids,omitempty"`
 	Runs         []Run  `json:"runs,omitempty"`
 }
 
@@ -128,7 +104,7 @@ func (c *Client) UpdatePlanEntry(planID int, entryID string, updates SendableEnt
 	return updatedEntry, err
 }
 
-// Close the plan planId
+// Close the plan planID
 func (c *Client) ClosePlan(planID int) (Plan, error) {
 	deletedPlan := Plan{}
 	err := c.sendRequest("POST", "close_plan/"+strconv.Itoa(planID), nil, &deletedPlan)
@@ -156,8 +132,8 @@ func applyFiltersForPlan(uri string, filters RequestFilterForPlan) string {
 	if len(filters.CreatedBy) != 0 {
 		uri = applySpecificFilter(uri, "created_by", filters.CreatedBy)
 	}
-	if len(filters.MilestoneId) != 0 {
-		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneId)
+	if len(filters.MilestoneID) != 0 {
+		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneID)
 	}
 	if filters.IsCompleted != nil {
 		uri = uri + "&is_completed=" + btoitos(*filters.IsCompleted)
@@ -165,8 +141,8 @@ func applyFiltersForPlan(uri string, filters RequestFilterForPlan) string {
 	if filters.Limit != nil {
 		uri = uri + "&limit=" + strconv.Itoa(*filters.Limit)
 	}
-	if filters.Offest != nil {
-		uri = uri + "&offset=" + strconv.Itoa(*filters.Offest)
+	if filters.Offset != nil {
+		uri = uri + "&offset=" + strconv.Itoa(*filters.Offset)
 	}
 
 	return uri

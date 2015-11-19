@@ -13,9 +13,9 @@ type CaseField struct {
 }
 
 type CaseFieldConfig struct {
-	Context Context `json:"context"`
-	ID      string  `json:"id"`
-	Options Option  `json:"options"`
+	Context Context         `json:"context"`
+	ID      string          `json:"id"`
+	Options CaseFieldOption `json:"options"`
 }
 
 type Context struct {
@@ -23,7 +23,7 @@ type Context struct {
 	ProjectIDs []int `json:"project_ids"`
 }
 
-type Option struct {
+type CaseFieldOption struct {
 	DefaultValue string `json:"default_value"`
 	Format       string `json:"format"`
 	IsRequired   bool   `json:"is_required"`

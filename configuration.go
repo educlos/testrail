@@ -6,7 +6,7 @@ type Configuration struct {
 	Configs   []Config `json:"configs"`
 	ID        int      `json:"id"`
 	Name      string   `json:"name"`
-	ProjectId int      `json:"project_id"`
+	ProjectID int      `json:"project_id"`
 }
 
 type Config struct {
