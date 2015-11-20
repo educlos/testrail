@@ -24,14 +24,14 @@ type UpdatableSection struct {
 	Name        string `json:"name,omitempty"`
 }
 
-// Returns the existing test section sectionID
+// Returns the existing section sectionID
 func (c *Client) GetSection(sectionID int) (Section, error) {
 	returnSection := Section{}
 	err := c.sendRequest("GET", "get_section/"+strconv.Itoa(sectionID), nil, &returnSection)
 	return returnSection, err
 }
 
-// Returns the list of test sections of projectID for suiteID, if specified
+// Returns the list of sections of projectID for suiteID, if specified
 func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	returnSection := []Section{}
 	uri := "get_sections/" + strconv.Itoa(projectID)
@@ -43,21 +43,21 @@ func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	return returnSection, err
 }
 
-// Creates a new test section on projectID and return the created test section
+// Creates a new section on projectID and return the created section
 func (c *Client) AddSection(projectID int, newSection SendableSection) (Section, error) {
 	createdSection := Section{}
 	err := c.sendRequest("POST", "add_section/"+strconv.Itoa(projectID), newSection, &createdSection)
 	return createdSection, err
 }
 
-// Updates the existing test section sectionID
+// Updates the existing section sectionID
 func (c *Client) UpdateSection(sectionID int, update UpdatableSection) (Section, error) {
 	updatedSection := Section{}
 	err := c.sendRequest("POST", "update_section/"+strconv.Itoa(sectionID), update, &updatedSection)
 	return updatedSection, err
 }
 
-// Delete the existing test section sectionID
+// Delete the existing section sectionID
 func (c *Client) DeleteSection(sectionID int) error {
 	return c.sendRequest("POST", "delete_section/"+strconv.Itoa(sectionID), nil, nil)
 }

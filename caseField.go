@@ -30,7 +30,7 @@ type CaseFieldOption struct {
 	Rows         string `json:"rows"`
 }
 
-// Returns a list of available case types.
+// Returns a list of available case custom fields
 func (c *Client) GetCaseFields() ([]CaseField, error) {
 	caseFields := []CaseField{}
 	err := c.sendRequest("GET", "get_case_fields", nil, &caseFields)

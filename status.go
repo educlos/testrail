@@ -12,6 +12,7 @@ type Statuses struct {
 	Name        string `json:"name"`
 }
 
+// Return the list of all possible statuses
 func (c *Client) GetStatuses() ([]Statuses, error) {
 	returnStatuses := []Statuses{}
 	err := c.sendRequest("GET", "get_statuses/", nil, &returnStatuses)

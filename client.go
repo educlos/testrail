@@ -66,7 +66,6 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 		return err
 	}
 
-	// fmt.Println(string(jsonCnt))
 	if v != nil {
 		err = json.Unmarshal(jsonCnt, v)
 		if err != nil {

@@ -57,42 +57,42 @@ type UpdatableRun struct {
 	CaseIDs     []int  `json:"case_id,omitempty"`
 }
 
-// Returns the existing test run runID
+// Returns the existing run runID
 func (c *Client) GetRun(runID int) (Run, error) {
 	returnRun := Run{}
 	err := c.sendRequest("GET", "get_run/"+strconv.Itoa(runID), nil, &returnRun)
 	return returnRun, err
 }
 
-// Returns the list of test runs of projectID
+// Returns the list of runs of projectID
 func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, error) {
 	returnRun := []Run{}
 	err := c.sendRequest("GET", "get_runs/"+strconv.Itoa(projectID), nil, &returnRun)
 	return returnRun, err
 }
 
-// Creates a new test run on projectID and return the created test run
+// Creates a new run on projectID and return the created run
 func (c *Client) AddRun(projectID int, newRun SendableRun) (Run, error) {
 	createdRun := Run{}
 	err := c.sendRequest("POST", "add_run/"+strconv.Itoa(projectID), newRun, &createdRun)
 	return createdRun, err
 }
 
-// Updates the existing test run runID
+// Updates the existing run runID
 func (c *Client) UpdateRun(runID int, update UpdatableRun) (Run, error) {
 	updatedRun := Run{}
 	err := c.sendRequest("POST", "update_run/"+strconv.Itoa(runID), update, &updatedRun)
 	return updatedRun, err
 }
 
-// Close the existing test run runID and archives its tests & results
+// Close the existing run runID and archives its tests & results
 func (c *Client) CloseRun(runID int) (Run, error) {
 	closedRun := Run{}
 	err := c.sendRequest("POST", "close_run/"+strconv.Itoa(runID), nil, &closedRun)
 	return closedRun, err
 }
 
-// Delete the existing test run runID
+// Delete the existing run runID
 func (c *Client) DeleteRun(runID int) error {
 	return c.sendRequest("POST", "delete_run/"+strconv.Itoa(runID), nil, nil)
 }

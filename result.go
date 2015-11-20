@@ -90,7 +90,7 @@ type ResultsForCase struct {
 	SendableResult
 }
 
-// Returns a list of test results for the test testID
+// Returns a list of results for the test testID
 func (c *Client) GetResults(testID int, filters ...RequestFilterForCaseResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results/" + strconv.Itoa(testID)
@@ -102,7 +102,7 @@ func (c *Client) GetResults(testID int, filters ...RequestFilterForCaseResults) 
 	return returnResults, err
 }
 
-// Returns a list of test results for the case caseID on run runID
+// Returns a list of results for the case caseID on run runID
 func (c *Client) GetResultsForCase(runID, caseID int, filters ...RequestFilterForCaseResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results_for_case/" + strconv.Itoa(runID) + "/" + strconv.Itoa(caseID)
@@ -114,7 +114,7 @@ func (c *Client) GetResultsForCase(runID, caseID int, filters ...RequestFilterFo
 	return returnResults, err
 }
 
-// Returns a list of test results for the run runID
+// Returns a list of results for the run runID
 func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results_for_run/" + strconv.Itoa(runID)
@@ -126,14 +126,14 @@ func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResul
 	return returnResults, err
 }
 
-// Adds a new test result, comment or assigns a test to testID
+// Adds a new result, comment or assigns a test to testID
 func (c *Client) AddResult(testID int, newResult SendableResult) (Result, error) {
 	createdResult := Result{}
 	err := c.sendRequest("POST", "add_result/"+strconv.Itoa(testID), newResult, &createdResult)
 	return createdResult, err
 }
 
-// Adds a new test result, comment or assigns a test to the case caseID on run runID
+// Adds a new result, comment or assigns a test to the case caseID on run runID
 func (c *Client) AddResultForCase(runID, caseID int, newResult SendableResult) (Result, error) {
 	createdResult := Result{}
 	uri := "add_result_for_case/" + strconv.Itoa(runID) + "/" + strconv.Itoa(caseID)
@@ -141,14 +141,14 @@ func (c *Client) AddResultForCase(runID, caseID int, newResult SendableResult) (
 	return createdResult, err
 }
 
-// Adds a new test result, comment or assigns a test to runID
+// Adds a new result, comment or assigns a test to runID
 func (c *Client) AddResults(runID int, newResult SendableResults) ([]Result, error) {
 	createdResult := []Result{}
 	err := c.sendRequest("POST", "add_results/"+strconv.Itoa(runID), newResult, &createdResult)
 	return createdResult, err
 }
 
-// Adds one or more new test results, comments or assigns one or more tests to run runID
+// Adds one or more new results, comments or assigns one or more tests to run runID
 func (c *Client) AddResultsForCase(runID int, newResult SendableResultsForCase) (Result, error) {
 	createdResult := Result{}
 	err := c.sendRequest("POST", "add_result_for_case/"+strconv.Itoa(runID), newResult, &createdResult)

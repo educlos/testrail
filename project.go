@@ -22,7 +22,7 @@ type SendableProject struct {
 	SuiteMode        int    `json:"suite_mode,omitempty"`
 }
 
-// Returns the existing test project projectID
+// Returns the existing project projectID
 func (c *Client) GetProject(projectID int) (Project, error) {
 	returnProject := Project{}
 	err := c.sendRequest("GET", "get_project/"+strconv.Itoa(projectID), nil, &returnProject)
@@ -41,14 +41,14 @@ func (c *Client) GetProjects(isCompleted ...bool) ([]Project, error) {
 	return returnProjects, err
 }
 
-// Creates a new test project and return the created test project
+// Creates a new project and return the created project
 func (c *Client) AddProject(newProject SendableProject) (Project, error) {
 	createdProject := Project{}
 	err := c.sendRequest("POST", "add_project", newProject, &createdProject)
 	return createdProject, err
 }
 
-// Updates the existing test project projectID
+// Updates the existing project projectID
 func (c *Client) UpdateProject(projectID int, updates SendableProject, isCompleted ...bool) (Project, error) {
 	updatedProject := Project{}
 	uri := "update_project/" + strconv.Itoa(projectID)
@@ -61,7 +61,7 @@ func (c *Client) UpdateProject(projectID int, updates SendableProject, isComplet
 	return updatedProject, err
 }
 
-// Deletes the existing test project projectID
+// Deletes the existing project projectID
 func (c *Client) DeleteProject(projectID int) error {
 	return c.sendRequest("POST", "delete_project/"+strconv.Itoa(projectID), nil, nil)
 }
