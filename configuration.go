@@ -1,6 +1,6 @@
 package testrail
 
-import "strconv"
+import "fmt"
 
 type Configuration struct {
 	Configs   []Config `json:"configs"`
@@ -15,9 +15,8 @@ type Config struct {
 	Name    string `json:"name"`
 }
 
-// Returns a list of available configurations, grouped by configuration groups
-func (c *Client) GetCongifs(projectID int) ([]Configuration, error) {
-	configs := []Configuration{}
-	err := c.sendRequest("GET", "get_configs/"+strconv.Itoa(projectID), nil, &configs)
-	return configs, err
+// GetConfigs returns a list of available configurations, grouped by configuration groups
+func (c *Client) GetConfigs(projectID int) (configs []Configuration, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_configs/%d", projectID), nil, &configs)
+	return
 }

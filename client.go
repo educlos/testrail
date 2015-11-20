@@ -2,7 +2,6 @@ package testrail
 
 import (
 	"bytes"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -18,10 +17,11 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func (c *Client) NewClient(inUrl, inUsername, inPassword string) {
-	c.username = inUsername
-	c.password = inPassword
-	c.url = inUrl
+func (c *Client) NewClient(url, username, password string) {
+	c.username = username
+	c.password = password
+
+	c.url = url
 	if !strings.HasSuffix(c.url, "/") {
 		c.url += "/"
 	}
@@ -46,10 +46,9 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 		return err
 	}
 
-	auth := base64.StdEncoding.EncodeToString([]byte(c.username + ":" + c.password))
+	req.SetBasicAuth(c.username, c.password)
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Authorization", "Basic "+auth)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -58,18 +57,18 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode > 299 {
-		return fmt.Errorf("Status: " + resp.Status)
+		return fmt.Errorf("response: status=%q", resp.Status)
 	}
 
 	jsonCnt, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return fmt.Errorf("reading: %s", err)
 	}
 
 	if v != nil {
 		err = json.Unmarshal(jsonCnt, v)
 		if err != nil {
-			return fmt.Errorf("unmarshaling data: %s", err)
+			return fmt.Errorf("unmarshaling response: %s", err)
 		}
 	}
 
