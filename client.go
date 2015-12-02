@@ -25,6 +25,7 @@ type Client struct {
 // with the given credential
 // for the given testrail domain
 func NewClient(url, username, password string) (c *Client) {
+	c = &Client{}
 	c.username = username
 	c.password = password
 
