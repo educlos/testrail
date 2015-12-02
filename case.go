@@ -2,6 +2,7 @@ package testrail
 
 import "fmt"
 
+// Case represents a Test Case
 type Case struct {
 	CreatedBy            int          `json:"created_by"`
 	CreatedOn            int          `json:"created_on"`
@@ -23,11 +24,15 @@ type Case struct {
 	UdpatedOn            int          `json:"updated_on"`
 }
 
+// CustomStep represents the custom steps
+// a Test Case can have
 type CustomStep struct {
 	Content  string `json:"content"`
 	Expected string `json:"expected"`
 }
 
+// RequestFilterForCases represents the filters
+// usable to get the test cases
 type RequestFilterForCases struct {
 	CreatedAfter  string `json:"created_after"`
 	CreatedBefore string `json:"created_before"`
@@ -40,6 +45,8 @@ type RequestFilterForCases struct {
 	UpdatedBy     []int  `json:"updated_by"`
 }
 
+// SendableCase represents a Test Case
+// that can be created or updated via the api
 type SendableCase struct {
 	Title       string       `json:"title"`
 	TypeID      int          `json:"type_id,omitempty"`
@@ -60,14 +67,16 @@ type SendableCase struct {
 	User        int          `json:"custom_user,omitempty"`
 }
 
-// Returns the existing test case caseID
+// GetCase returns the existing Test Case caseID
 func (c *Client) GetCase(caseID int) (Case, error) {
 	returnCase := Case{}
 	err := c.sendRequest("GET", fmt.Sprintf("get_case/%d", caseID), nil, &returnCase)
 	return returnCase, err
 }
 
-// Returns a list of test cases for a test suite or specific section in a test suite
+// GetCases returns a list of Test Cases on project projectID
+// for a Test Suite suiteID
+// or for specific section sectionID in a Test Suite
 func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, error) {
 	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
 	if len(sectionID) > 0 {
@@ -79,7 +88,8 @@ func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, err
 	return returnCases, err
 }
 
-// Returns a list of test cases for a test suite validating the filters
+// GetCasesWithFilters returns a list of Test Cases on project projectID
+// for a Test Suite suiteID validating the filters
 func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) ([]Case, error) {
 	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
 	if len(filters) > 0 {
@@ -92,25 +102,27 @@ func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestF
 	return returnCases, err
 }
 
-// Creates a new test case and return the created test case
+// AddCase creates a new Test Case newCase and returns it
 func (c *Client) AddCase(sectionID int, newCase SendableCase) (Case, error) {
 	createdCase := Case{}
 	err := c.sendRequest("POST", fmt.Sprintf("add_case/%d", sectionID), newCase, &createdCase)
 	return createdCase, err
 }
 
-// Updates the existing test case caseID
+// UpdateCase updates an existing Test Case caseID and returns it
 func (c *Client) UpdateCase(caseID int, updates SendableCase) (Case, error) {
 	updatedCase := Case{}
 	err := c.sendRequest("POST", fmt.Sprintf("update_case/%d", caseID), updates, &updatedCase)
 	return updatedCase, err
 }
 
-// Deletes the existing test case caseID
+// DeleteCase deletes the existing Test Case caseID
 func (c *Client) DeleteCase(caseID int) error {
 	return c.sendRequest("POST", fmt.Sprintf("delete_case/%d", caseID), nil, nil)
 }
 
+// applyFiltersForCase go through each possible filters and create the
+// uri for the wanted ones
 func applyFiltersForCase(uri string, filters RequestFilterForCases) string {
 	if filters.CreatedAfter != "" {
 		uri = fmt.Sprintf("%s&created_after=%s", uri, filters.CreatedAfter)

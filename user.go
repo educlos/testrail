@@ -2,6 +2,7 @@ package testrail
 
 import "strconv"
 
+// User represents a User
 type User struct {
 	Email    string `json:"email"`
 	ID       int    `json:"id"`
@@ -9,21 +10,21 @@ type User struct {
 	Name     string `json:"name"`
 }
 
-// Returns the existing user userID
+// GetUser returns the user userID
 func (c *Client) GetUser(userID int) (User, error) {
 	returnUser := User{}
 	err := c.sendRequest("GET", "get_user/"+strconv.Itoa(userID), nil, &returnUser)
 	return returnUser, err
 }
 
-// Returns the existing user with email email
+// GetUserByEmail returns the user corresponding to email email
 func (c *Client) GetUserByEmail(email string) (User, error) {
 	returnUser := User{}
 	err := c.sendRequest("GET", "get_user_by_email&email="+email, nil, &returnUser)
 	return returnUser, err
 }
 
-// Returns the list of user
+// GetUsers returns the list of users
 func (c *Client) GetUsers() ([]User, error) {
 	returnUser := []User{}
 	err := c.sendRequest("GET", "get_users", nil, &returnUser)

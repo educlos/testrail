@@ -2,6 +2,7 @@ package testrail
 
 import "strconv"
 
+// Section represents a Test Suite Section
 type Section struct {
 	Depth        int    `json:"depth"`
 	Description  string `json:"description"`
@@ -12,6 +13,8 @@ type Section struct {
 	SuiteID      int    `json:"suite_id"`
 }
 
+// SendableSection represents a Test Suite Section
+// that can be created via the api
 type SendableSection struct {
 	Description string `json:"description,omitempty"`
 	SuiteID     int    `json:"suite_id,omitempty"`
@@ -19,19 +22,22 @@ type SendableSection struct {
 	Name        string `json:"name"`
 }
 
+// UpdatableSection represents a Test Suite Section
+// that can be updated via the api
 type UpdatableSection struct {
 	Description string `json:"description,omitempty"`
 	Name        string `json:"name,omitempty"`
 }
 
-// Returns the existing section sectionID
+// GetSection returns the section sectionID
 func (c *Client) GetSection(sectionID int) (Section, error) {
 	returnSection := Section{}
 	err := c.sendRequest("GET", "get_section/"+strconv.Itoa(sectionID), nil, &returnSection)
 	return returnSection, err
 }
 
-// Returns the list of sections of projectID for suiteID, if specified
+// GetSections returns the list of sections of projectID
+// present in suite suiteID, if specified
 func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	returnSection := []Section{}
 	uri := "get_sections/" + strconv.Itoa(projectID)
@@ -43,21 +49,21 @@ func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	return returnSection, err
 }
 
-// Creates a new section on projectID and return the created section
+// AddSection creates a new section on projectID and returns it
 func (c *Client) AddSection(projectID int, newSection SendableSection) (Section, error) {
 	createdSection := Section{}
 	err := c.sendRequest("POST", "add_section/"+strconv.Itoa(projectID), newSection, &createdSection)
 	return createdSection, err
 }
 
-// Updates the existing section sectionID
+// UpdateSection updates the section sectionID and returns it
 func (c *Client) UpdateSection(sectionID int, update UpdatableSection) (Section, error) {
 	updatedSection := Section{}
 	err := c.sendRequest("POST", "update_section/"+strconv.Itoa(sectionID), update, &updatedSection)
 	return updatedSection, err
 }
 
-// Delete the existing section sectionID
+// DeleteSection deletes the section sectionID
 func (c *Client) DeleteSection(sectionID int) error {
 	return c.sendRequest("POST", "delete_section/"+strconv.Itoa(sectionID), nil, nil)
 }

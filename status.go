@@ -1,6 +1,7 @@
 package testrail
 
-type Statuses struct {
+// Status represents a Status
+type Status struct {
 	ColorBright int    `json:"color_bright"`
 	ColorDark   int    `json:"color_dark"`
 	ColorMedium int    `json:"color_medium"`
@@ -12,9 +13,9 @@ type Statuses struct {
 	Name        string `json:"name"`
 }
 
-// Return the list of all possible statuses
-func (c *Client) GetStatuses() ([]Statuses, error) {
-	returnStatuses := []Statuses{}
+// GetStatuses return the list of all possible statuses
+func (c *Client) GetStatuses() ([]Status, error) {
+	returnStatuses := []Status{}
 	err := c.sendRequest("GET", "get_statuses/", nil, &returnStatuses)
 	return returnStatuses, err
 }

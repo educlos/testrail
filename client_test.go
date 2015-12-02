@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// NewTestClient returns a mocked http.Client
 func NewTestClient(replyResp *http.Response, err error) *http.Client {
 	client := &http.Client{}
 	client.Transport = &MockTransport{
@@ -31,11 +32,11 @@ func newResponse(body string) *http.Response {
 	return &http.Response{Body: ioutil.NopCloser(bytes.NewBuffer([]byte(body)))}
 }
 
+// TestSendRequest tests all the client functionalities
 func TestSendRequest(t *testing.T) {
 	testClient(t)
 
-	c := &Client{}
-	c.NewClient("http://example.com", "testUsername", "testPassword")
+	c := NewClient("http://example.com", "testUsername", "testPassword")
 	c.httpClient = NewTestClient(newResponse(`{ "status_id": 1 }`), nil)
 
 	testValidGetRequest(t, c)
@@ -43,22 +44,22 @@ func TestSendRequest(t *testing.T) {
 	testValidPostRequest(t, c)
 }
 
+// testClient tests the NewClient method
 func testClient(t *testing.T) {
-	c1 := &Client{}
-	c1.NewClient("http://example.com", "testUsername", "testPassword")
+	c1 := NewClient("http://example.com", "testUsername", "testPassword")
 
 	if c1.url != "http://example.com/index.php?/api/v2/" {
 		t.Fatal("Expected valid url but got ", c1.url)
 	}
 
-	c2 := &Client{}
-	c2.NewClient("http://example.com/", "testUsername", "testPassword")
+	c2 := NewClient("http://example.com/", "testUsername", "testPassword")
 
 	if c2.url != "http://example.com/index.php?/api/v2/" {
 		t.Fatal("Expected valid url but got ", c2.url)
 	}
 }
 
+// testValidGetRequest tests the sendRequest method for a GET
 func testValidGetRequest(t *testing.T, c *Client) {
 	var v struct {
 		StatusID int `json:"status_id"`

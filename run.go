@@ -2,6 +2,7 @@ package testrail
 
 import "strconv"
 
+// Run represents a Run
 type Run struct {
 	AssignedToID  int    `json:"assignedto_id"`
 	BlockedCount  int    `json:"blocked_count"`
@@ -28,6 +29,8 @@ type Run struct {
 	URL           string `json:"url"`
 }
 
+// RequestFilterForRun represents the filters
+// usable to get the run
 type RequestFilterForRun struct {
 	CreatedAfter  string `json:"created_after,omitempty"`
 	CreatedBefore string `json:"created_before,omitempty"`
@@ -39,6 +42,8 @@ type RequestFilterForRun struct {
 	SuiteID       []int  `json:"suite_id,omitempty"`
 }
 
+// SendableRun represents a Run
+// that can be created via the api
 type SendableRun struct {
 	SuiteID      int    `json:"suite_id"`
 	Name         string `json:"name,omitempty"`
@@ -49,6 +54,8 @@ type SendableRun struct {
 	CaseIDs      []int  `json:"case_id,omitempty"`
 }
 
+// UpdatableRun represents a Run
+// that can be updated via the api
 type UpdatableRun struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
@@ -57,46 +64,51 @@ type UpdatableRun struct {
 	CaseIDs     []int  `json:"case_id,omitempty"`
 }
 
-// Returns the existing run runID
+// GetRun returns the run runID
 func (c *Client) GetRun(runID int) (Run, error) {
 	returnRun := Run{}
 	err := c.sendRequest("GET", "get_run/"+strconv.Itoa(runID), nil, &returnRun)
 	return returnRun, err
 }
 
-// Returns the list of runs of projectID
+// GetRuns returns the list of runs of projectID
+// validating the filters
 func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, error) {
 	returnRun := []Run{}
 	err := c.sendRequest("GET", "get_runs/"+strconv.Itoa(projectID), nil, &returnRun)
 	return returnRun, err
 }
 
-// Creates a new run on projectID and return the created run
+// AddRun creates a new run on projectID and returns it
 func (c *Client) AddRun(projectID int, newRun SendableRun) (Run, error) {
 	createdRun := Run{}
 	err := c.sendRequest("POST", "add_run/"+strconv.Itoa(projectID), newRun, &createdRun)
 	return createdRun, err
 }
 
-// Updates the existing run runID
+// UpdateRun updates the run runID and returns it
 func (c *Client) UpdateRun(runID int, update UpdatableRun) (Run, error) {
 	updatedRun := Run{}
 	err := c.sendRequest("POST", "update_run/"+strconv.Itoa(runID), update, &updatedRun)
 	return updatedRun, err
 }
 
-// Close the existing run runID and archives its tests & results
+// CloseRun closes the run runID,
+// archives its tests and results
+// and returns it
 func (c *Client) CloseRun(runID int) (Run, error) {
 	closedRun := Run{}
 	err := c.sendRequest("POST", "close_run/"+strconv.Itoa(runID), nil, &closedRun)
 	return closedRun, err
 }
 
-// Delete the existing run runID
+// DeleteRun delete the run runID
 func (c *Client) DeleteRun(runID int) error {
 	return c.sendRequest("POST", "delete_run/"+strconv.Itoa(runID), nil, nil)
 }
 
+// applyFiltersForRuns go through each possible filters and create the
+// uri for the wanted ones
 func applyFiltersForRuns(uri string, filters RequestFilterForRun) string {
 	if filters.CreatedAfter != "" {
 		uri = uri + "&created_after=" + filters.CreatedAfter

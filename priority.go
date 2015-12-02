@@ -1,6 +1,7 @@
 package testrail
 
-type Priorities struct {
+// Priority represents a Priority
+type Priority struct {
 	ID        int    `json:"id"`
 	IsDefault bool   `json:"is_default"`
 	Name      string `json:"name"`
@@ -8,9 +9,9 @@ type Priorities struct {
 	ShortName string `json:"short_name"`
 }
 
-// Returns a list of available priorities.
-func (c *Client) GetPriorities() ([]Priorities, error) {
-	prios := []Priorities{}
+// GetPriorities returns a list of available priorities
+func (c *Client) GetPriorities() ([]Priority, error) {
+	prios := []Priority{}
 	err := c.sendRequest("GET", "get_priorities/", nil, &prios)
 	return prios, err
 }

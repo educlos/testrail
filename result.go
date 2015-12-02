@@ -2,6 +2,7 @@ package testrail
 
 import "strconv"
 
+// Result represents a Test Case result
 type Result struct {
 	AssignedtoID      int                `json:"assignedto_id"`
 	Comment           string             `json:"comment"`
@@ -16,20 +17,8 @@ type Result struct {
 	Version           string             `json:"version"`
 }
 
-type CustomComments struct {
-	Checkbox    bool               `json:"checkbox"`
-	Date        string             `json:"date"`
-	Dropdown    int                `json:"dropdown"`
-	Integer     int                `json:"integer"`
-	Milestone   int                `json:"milestone"`
-	MultiSelect []int              `json:"multi-select"`
-	StepResults []CustomStepResult `json:"step_results"`
-	String      string             `json:"string"`
-	Text        string             `json:"text"`
-	URL         string             `json:"url"`
-	User        int                `json:"user"`
-}
-
+// CustomStepResult represents the custom steps
+// results a Result can have
 type CustomStepResult struct {
 	Content  string `json:"content"`
 	Expected string `json:"expected"`
@@ -37,12 +26,16 @@ type CustomStepResult struct {
 	StatusID int    `json:"status_id"`
 }
 
+// RequestFilterForCaseResults represents the filters
+// usable to get the test case results
 type RequestFilterForCaseResults struct {
 	Limit    *int  `json:"limit,omitempty"`
 	Offest   *int  `json:"offset, omitempty"`
 	StatusID []int `json:"status_id,omitempty"`
 }
 
+// RequestFilterForRunResults represents the filters
+// usable to get the run results
 type RequestFilterForRunResults struct {
 	CreatedAfter  string `json:"created_after,omitempty"`
 	CreatedBefore string `json:"created_before,omitempty"`
@@ -52,6 +45,8 @@ type RequestFilterForRunResults struct {
 	StatusID      []int  `json:"status_id,omitempty"`
 }
 
+// SendableResult represents a Test Case result
+// that can be created or updated via the api
 type SendableResult struct {
 	StatusID     int                `json:"status_id,omitempty"`
 	Comment      string             `json:"comment,omitempty"`
@@ -72,25 +67,27 @@ type SendableResult struct {
 	User         int                `json:"custom_user,omitempty"`
 }
 
+// SendableResults represents a list of run results
+// that can be created or updated via the api
 type SendableResults struct {
 	Results []Results `json:"results"`
 }
 
+// Results represents a run result
+// that can be created or updated via the api
 type Results struct {
 	TestID int `json:"test_id"`
 	SendableResult
 }
 
+// SendableResultsForCase represents a Test Case result
+// that can be created or updated via the api
 type SendableResultsForCase struct {
 	Results []Results `json:"results"`
 }
 
-type ResultsForCase struct {
-	CaseID int `json:"case_id"`
-	SendableResult
-}
-
-// Returns a list of results for the test testID
+// GetResults returns a list of results for the test testID
+// validating the filters
 func (c *Client) GetResults(testID int, filters ...RequestFilterForCaseResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results/" + strconv.Itoa(testID)
@@ -102,7 +99,8 @@ func (c *Client) GetResults(testID int, filters ...RequestFilterForCaseResults) 
 	return returnResults, err
 }
 
-// Returns a list of results for the case caseID on run runID
+// GetResultsForCase returns a list of results for the case caseID
+// on run runID validating the filters
 func (c *Client) GetResultsForCase(runID, caseID int, filters ...RequestFilterForCaseResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results_for_case/" + strconv.Itoa(runID) + "/" + strconv.Itoa(caseID)
@@ -114,7 +112,8 @@ func (c *Client) GetResultsForCase(runID, caseID int, filters ...RequestFilterFo
 	return returnResults, err
 }
 
-// Returns a list of results for the run runID
+// GetResultsForRun returns a list of results for the run runID
+// validating the filters
 func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResults) ([]Result, error) {
 	returnResults := []Result{}
 	uri := "get_results_for_run/" + strconv.Itoa(runID)
@@ -126,14 +125,14 @@ func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResul
 	return returnResults, err
 }
 
-// Adds a new result, comment or assigns a test to testID
+// AddResult adds a new result, comment or assigns a test to testID
 func (c *Client) AddResult(testID int, newResult SendableResult) (Result, error) {
 	createdResult := Result{}
 	err := c.sendRequest("POST", "add_result/"+strconv.Itoa(testID), newResult, &createdResult)
 	return createdResult, err
 }
 
-// Adds a new result, comment or assigns a test to the case caseID on run runID
+// AddResultForCase adds a new result, comment or assigns a test to the case caseID on run runID
 func (c *Client) AddResultForCase(runID, caseID int, newResult SendableResult) (Result, error) {
 	createdResult := Result{}
 	uri := "add_result_for_case/" + strconv.Itoa(runID) + "/" + strconv.Itoa(caseID)
@@ -141,20 +140,23 @@ func (c *Client) AddResultForCase(runID, caseID int, newResult SendableResult) (
 	return createdResult, err
 }
 
-// Adds a new result, comment or assigns a test to runID
+// AddResults adds new results, comment or assigns tests to runID
 func (c *Client) AddResults(runID int, newResult SendableResults) ([]Result, error) {
 	createdResult := []Result{}
 	err := c.sendRequest("POST", "add_results/"+strconv.Itoa(runID), newResult, &createdResult)
 	return createdResult, err
 }
 
-// Adds one or more new results, comments or assigns one or more tests to run runID
+// AddResultsForCase adds new results, comments or assigns tests to run runID
+// each result being assigned to a test case
 func (c *Client) AddResultsForCase(runID int, newResult SendableResultsForCase) (Result, error) {
 	createdResult := Result{}
 	err := c.sendRequest("POST", "add_result_for_case/"+strconv.Itoa(runID), newResult, &createdResult)
 	return createdResult, err
 }
 
+// applyFiltersForCaseResults go through each possible filters and create the
+// uri for the wanted ones
 func applyFiltersForCaseResults(uri string, filters RequestFilterForCaseResults) string {
 	if filters.Limit != nil {
 		uri = uri + "&limit=" + strconv.Itoa(*filters.Limit)
@@ -169,6 +171,8 @@ func applyFiltersForCaseResults(uri string, filters RequestFilterForCaseResults)
 	return uri
 }
 
+// applyFiltersForCaseResults go through each possible filters and create the
+// uri for the wanted ones
 func applyFiltersForRunResults(uri string, filters RequestFilterForRunResults) string {
 	if filters.CreatedAfter != "" {
 		uri = uri + "&created_after=" + filters.CreatedAfter

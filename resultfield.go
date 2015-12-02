@@ -1,5 +1,6 @@
 package testrail
 
+// ResultField represents a ResultField
 type ResultField struct {
 	Configs      []ResultFieldConfig `json:"configs"`
 	Description  string              `json:"description"`
@@ -11,12 +12,16 @@ type ResultField struct {
 	TypeID       int                 `json:"type_id"`
 }
 
+// ResultFieldConfig represents a config
+// a ResultField can have
 type ResultFieldConfig struct {
 	Context Context           `json:"context"`
 	ID      string            `json:"id"`
 	Options ResultFieldOption `json:"options"`
 }
 
+// ResultFieldOption represents an option
+// a ResultField can have
 type ResultFieldOption struct {
 	Format      string `json:"format"`
 	HasActual   bool   `json:"has_actual"`
@@ -24,7 +29,7 @@ type ResultFieldOption struct {
 	IsRequired  bool   `json:"is_required"`
 }
 
-// Returns a list of available test result custom fields
+// GetResultFields returns a list of available test result custom fields
 func (c *Client) GetResultFields() ([]ResultField, error) {
 	caseFields := []ResultField{}
 	err := c.sendRequest("GET", "get_result_fields", nil, &caseFields)

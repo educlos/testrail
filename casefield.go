@@ -1,5 +1,6 @@
 package testrail
 
+// CaseField represents a Case Field
 type CaseField struct {
 	Configs      []CaseFieldConfig `json:"configs"`
 	Description  string            `json:"description"`
@@ -12,17 +13,20 @@ type CaseField struct {
 	TypeID       int               `json:"type_id"`
 }
 
+// CaseFieldConfig represents the config a Case Field can have
 type CaseFieldConfig struct {
 	Context Context         `json:"context"`
 	ID      string          `json:"id"`
 	Options CaseFieldOption `json:"options"`
 }
 
+// Context represents the context a config can have
 type Context struct {
 	IsGlobal   bool  `json:"is_global"`
 	ProjectIDs []int `json:"project_ids"`
 }
 
+// CaseFieldOption represents the options a config can have
 type CaseFieldOption struct {
 	DefaultValue string `json:"default_value"`
 	Format       string `json:"format"`
@@ -30,7 +34,7 @@ type CaseFieldOption struct {
 	Rows         string `json:"rows"`
 }
 
-// Returns a list of available case custom fields
+// GetCaseFields returns a list of available case custom fields
 func (c *Client) GetCaseFields() ([]CaseField, error) {
 	caseFields := []CaseField{}
 	err := c.sendRequest("GET", "get_case_fields", nil, &caseFields)

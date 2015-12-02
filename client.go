@@ -1,3 +1,4 @@
+// Package testrail provides an api for testrail
 package testrail
 
 import (
@@ -10,6 +11,9 @@ import (
 	"strings"
 )
 
+// A Client stores the client informations
+// and implement all the api functions
+// to communicate with testrail
 type Client struct {
 	url        string
 	username   string
@@ -17,7 +21,10 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func (c *Client) NewClient(url, username, password string) {
+// NewClient returns a new client
+// with the given credential
+// for the given testrail domain
+func NewClient(url, username, password string) (c *Client) {
 	c.username = username
 	c.password = password
 
@@ -28,8 +35,13 @@ func (c *Client) NewClient(url, username, password string) {
 	c.url += "index.php?/api/v2/"
 
 	c.httpClient = &http.Client{}
+
+	return
 }
 
+// sendRequest sends a request of type "method"
+// to the url "client.url+uri" and with optional data "data"
+// Returns an error if any and the optional data "v"
 func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	var body io.Reader
 	if data != nil {

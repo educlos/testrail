@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+// Project represents a Project
 type Project struct {
 	Announcement     string `json:"announcement"`
 	CompletedOn      int    `json:"completed_on"`
@@ -15,6 +16,8 @@ type Project struct {
 	URL              string `json:"url"`
 }
 
+// SendableProject represents a Project
+// that can be created or updated via the ap
 type SendableProject struct {
 	Name             string `json:"name"`
 	Announcement     string `json:"announcement,omitempty"`
@@ -22,14 +25,15 @@ type SendableProject struct {
 	SuiteMode        int    `json:"suite_mode,omitempty"`
 }
 
-// Returns the existing project projectID
+// GetProject returns the existing project projectID
 func (c *Client) GetProject(projectID int) (Project, error) {
 	returnProject := Project{}
 	err := c.sendRequest("GET", "get_project/"+strconv.Itoa(projectID), nil, &returnProject)
 	return returnProject, err
 }
 
-// Returns a list available projects
+// GetProjects returns a list available projects
+// can be filtered by completed status of the project
 func (c *Client) GetProjects(isCompleted ...bool) ([]Project, error) {
 	uri := "get_projects"
 	if len(isCompleted) > 0 {
@@ -41,14 +45,14 @@ func (c *Client) GetProjects(isCompleted ...bool) ([]Project, error) {
 	return returnProjects, err
 }
 
-// Creates a new project and return the created project
+// AddProject creates a new project and return its
 func (c *Client) AddProject(newProject SendableProject) (Project, error) {
 	createdProject := Project{}
 	err := c.sendRequest("POST", "add_project", newProject, &createdProject)
 	return createdProject, err
 }
 
-// Updates the existing project projectID
+// UpdateProject updates the existing project projectID and returns it
 func (c *Client) UpdateProject(projectID int, updates SendableProject, isCompleted ...bool) (Project, error) {
 	updatedProject := Project{}
 	uri := "update_project/" + strconv.Itoa(projectID)
@@ -61,7 +65,7 @@ func (c *Client) UpdateProject(projectID int, updates SendableProject, isComplet
 	return updatedProject, err
 }
 
-// Deletes the existing project projectID
+// DeleteProject deletes the project projectID
 func (c *Client) DeleteProject(projectID int) error {
 	return c.sendRequest("POST", "delete_project/"+strconv.Itoa(projectID), nil, nil)
 }

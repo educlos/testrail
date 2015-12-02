@@ -2,6 +2,7 @@ package testrail
 
 import "strconv"
 
+// Test represent a Test
 type Test struct {
 	AssignedToID     int    `json:"assignedto_id"`
 	CaseID           int    `json:"case_id"`
@@ -17,14 +18,15 @@ type Test struct {
 	TypeID           int    `json:"type_id"`
 }
 
-// Returns the existing test testID
+// GetTest returns the test testID
 func (c *Client) GetTest(testID int) (Test, error) {
 	returnTest := Test{}
 	err := c.sendRequest("GET", "get_test/"+strconv.Itoa(testID), nil, &returnTest)
 	return returnTest, err
 }
 
-// Returns the list of tests of runID, with status statusID, if specified
+// GetTests returns the list of tests of runID
+// with status statusID, if specified
 func (c *Client) GetTests(runID int, statusID ...[]int) ([]Test, error) {
 	returnTest := []Test{}
 	uri := "get_tests/" + strconv.Itoa(runID)
