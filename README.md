@@ -1,5 +1,6 @@
 ## Go implementation of the [TestRail](http://www.gurock.com/testrail/) API
 
+[![GoDoc](https://godoc.org/github.com/Etienne42/testrail?status.svg)](https://godoc.org/github.com/Etienne42/testrail)
 
 Example usage
 -------------
