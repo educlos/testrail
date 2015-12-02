@@ -1,4 +1,4 @@
-// Package testrail provides an api for testrail
+// testrail provides a go api for testrail
 package testrail
 
 import (
