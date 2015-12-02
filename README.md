@@ -1,4 +1,4 @@
-Go implementation of the [TestRail](http://www.gurock.com/testrail/) API
+## Go implementation of the [TestRail](http://www.gurock.com/testrail/) API
 
 
 Example usage
