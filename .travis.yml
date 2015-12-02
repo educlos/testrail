@@ -1,0 +1,17 @@
+language: go
+go:
+  - 1.4
+  - 1.5
+  - release
+
+before_install:
+  - export PATH=$PATH:$HOME/gopath/bin
+
+matrix:
+  allow_failures:
+    - go: 1.4
+    - go: 1.5
+    - go: release
+
+script:
+ - go test -v
