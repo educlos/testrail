@@ -7,7 +7,7 @@ testrail is a Go client library for accessing the [TestRail](http://www.gurock.c
 
 **GoDoc:** [![GoDoc](https://godoc.org/github.com/Etienne42/testrail?status.svg)](https://godoc.org/github.com/Etienne42/testrail)
 
-**Test Coverage:** 9.52% [gocov report)](https://github.com/Etienne42/testrail/blob/master/gocov.html)
+**Test Coverage:** 9.52% [gocov report](https://github.com/Etienne42/testrail/blob/master/gocov.html)
 
 References
 ----------
