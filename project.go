@@ -2,7 +2,7 @@ package testrail
 
 import (
 	"fmt"
-	"strconv"
+	"net/url"
 )
 
 // Project represents a Project
@@ -26,46 +26,42 @@ type SendableProject struct {
 }
 
 // GetProject returns the existing project projectID
-func (c *Client) GetProject(projectID int) (Project, error) {
-	returnProject := Project{}
-	err := c.sendRequest("GET", "get_project/"+strconv.Itoa(projectID), nil, &returnProject)
-	return returnProject, err
+func (c *Client) GetProject(projectID int) (project Project, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_project/%d", projectID), nil, &project)
+	return
 }
 
 // GetProjects returns a list available projects
 // can be filtered by completed status of the project
-func (c *Client) GetProjects(isCompleted ...bool) ([]Project, error) {
-	uri := "get_projects"
+func (c *Client) GetProjects(isCompleted ...bool) (projects []Project, err error) {
+	vals := make(url.Values)
+
 	if len(isCompleted) > 0 {
-		uri = uri + "&is_completed=" + btoitos(isCompleted[0])
+		vals.Set("is_completed", boolToString(isCompleted[0]))
 	}
 
-	returnProjects := []Project{}
-	err := c.sendRequest("GET", uri, nil, &returnProjects)
-	return returnProjects, err
+	err = c.sendRequest("GET", fmt.Sprintf("get_projects?%s", vals.Encode()), nil, &projects)
+	return
 }
 
 // AddProject creates a new project and return its
-func (c *Client) AddProject(newProject SendableProject) (Project, error) {
-	createdProject := Project{}
-	err := c.sendRequest("POST", "add_project", newProject, &createdProject)
-	return createdProject, err
+func (c *Client) AddProject(newProject SendableProject) (project Project, err error) {
+	err = c.sendRequest("POST", "add_project", newProject, &project)
+	return
 }
 
 // UpdateProject updates the existing project projectID and returns it
-func (c *Client) UpdateProject(projectID int, updates SendableProject, isCompleted ...bool) (Project, error) {
-	updatedProject := Project{}
-	uri := "update_project/" + strconv.Itoa(projectID)
+func (c *Client) UpdateProject(projectID int, updates SendableProject, isCompleted ...bool) (project Project, err error) {
+	vals := make(url.Values)
 	if len(isCompleted) > 0 {
-		uri = uri + "&is_completed=" + btoitos(isCompleted[0])
+		vals.Set("is_completed", boolToString(isCompleted[0]))
 	}
 
-	fmt.Println(uri)
-	err := c.sendRequest("POST", uri, updates, &updatedProject)
-	return updatedProject, err
+	err = c.sendRequest("POST", fmt.Sprintf("update_project/%d?%s", projectID, vals.Encode()), updates, &project)
+	return
 }
 
 // DeleteProject deletes the project projectID
 func (c *Client) DeleteProject(projectID int) error {
-	return c.sendRequest("POST", "delete_project/"+strconv.Itoa(projectID), nil, nil)
+	return c.sendRequest("POST", fmt.Sprintf("delete_project/%d", projectID), nil, nil)
 }

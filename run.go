@@ -1,6 +1,9 @@
 package testrail
 
-import "strconv"
+import (
+	"fmt"
+	"net/url"
+)
 
 // Run represents a Run
 type Run struct {
@@ -32,14 +35,14 @@ type Run struct {
 // RequestFilterForRun represents the filters
 // usable to get the run
 type RequestFilterForRun struct {
-	CreatedAfter  string `json:"created_after,omitempty"`
-	CreatedBefore string `json:"created_before,omitempty"`
-	CreatedBy     []int  `json:"created_by,omitempty"`
-	IsCompleted   *bool  `json:"is_completed,omitempty"`
-	Limit         *int   `json:"limit,omitempty"`
-	Offset        *int   `json:"offset, omitempty"`
-	MilestoneID   []int  `json:"milestone_id,omitempty"`
-	SuiteID       []int  `json:"suite_id,omitempty"`
+	CreatedAfter  string  `json:"created_after,omitempty"`
+	CreatedBefore string  `json:"created_before,omitempty"`
+	CreatedBy     IntList `json:"created_by,omitempty"`
+	IsCompleted   *bool   `json:"is_completed,omitempty"`
+	Limit         *int    `json:"limit,omitempty"`
+	Offset        *int    `json:"offset,omitempty"`
+	MilestoneID   IntList `json:"milestone_id,omitempty"`
+	SuiteID       IntList `json:"suite_id,omitempty"`
 }
 
 // SendableRun represents a Run
@@ -65,75 +68,41 @@ type UpdatableRun struct {
 }
 
 // GetRun returns the run runID
-func (c *Client) GetRun(runID int) (Run, error) {
-	returnRun := Run{}
-	err := c.sendRequest("GET", "get_run/"+strconv.Itoa(runID), nil, &returnRun)
-	return returnRun, err
+func (c *Client) GetRun(runID int) (run Run, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_run/%d", runID), nil, &run)
+	return
 }
 
 // GetRuns returns the list of runs of projectID
 // validating the filters
-func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, error) {
-	returnRun := []Run{}
-	err := c.sendRequest("GET", "get_runs/"+strconv.Itoa(projectID), nil, &returnRun)
-	return returnRun, err
+func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) (runs []Run, err error) {
+	vals := make(url.Values)
+	loadOptionalFilters(vals, filters)
+	err = c.sendRequest("GET", fmt.Sprintf("get_runs/%d?%s", projectID, vals.Encode()), nil, &runs)
+	return
 }
 
 // AddRun creates a new run on projectID and returns it
-func (c *Client) AddRun(projectID int, newRun SendableRun) (Run, error) {
-	createdRun := Run{}
-	err := c.sendRequest("POST", "add_run/"+strconv.Itoa(projectID), newRun, &createdRun)
-	return createdRun, err
+func (c *Client) AddRun(projectID int, newRun SendableRun) (run Run, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("add_run/%d", projectID), newRun, &run)
+	return
 }
 
 // UpdateRun updates the run runID and returns it
-func (c *Client) UpdateRun(runID int, update UpdatableRun) (Run, error) {
-	updatedRun := Run{}
-	err := c.sendRequest("POST", "update_run/"+strconv.Itoa(runID), update, &updatedRun)
-	return updatedRun, err
+func (c *Client) UpdateRun(runID int, update UpdatableRun) (run Run, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("update_run/%d", runID), update, &run)
+	return
 }
 
 // CloseRun closes the run runID,
 // archives its tests and results
 // and returns it
-func (c *Client) CloseRun(runID int) (Run, error) {
-	closedRun := Run{}
-	err := c.sendRequest("POST", "close_run/"+strconv.Itoa(runID), nil, &closedRun)
-	return closedRun, err
+func (c *Client) CloseRun(runID int) (run Run, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("close_run/%d", runID), nil, &run)
+	return
 }
 
 // DeleteRun delete the run runID
 func (c *Client) DeleteRun(runID int) error {
-	return c.sendRequest("POST", "delete_run/"+strconv.Itoa(runID), nil, nil)
-}
-
-// applyFiltersForRuns go through each possible filters and create the
-// uri for the wanted ones
-func applyFiltersForRuns(uri string, filters RequestFilterForRun) string {
-	if filters.CreatedAfter != "" {
-		uri = uri + "&created_after=" + filters.CreatedAfter
-	}
-	if filters.CreatedBefore != "" {
-		uri = uri + "&created_before=" + filters.CreatedBefore
-	}
-	if len(filters.CreatedBy) != 0 {
-		uri = applySpecificFilter(uri, "created_by", filters.CreatedBy)
-	}
-	if filters.IsCompleted != nil {
-		uri = uri + "&is_completed=" + btoitos(*filters.IsCompleted)
-	}
-	if filters.Limit != nil {
-		uri = uri + "&limit=" + strconv.Itoa(*filters.Limit)
-	}
-	if filters.Offset != nil {
-		uri = uri + "&offset=" + strconv.Itoa(*filters.Offset)
-	}
-	if len(filters.MilestoneID) != 0 {
-		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneID)
-	}
-	if len(filters.SuiteID) != 0 {
-		uri = applySpecificFilter(uri, "suite_id", filters.SuiteID)
-	}
-
-	return uri
+	return c.sendRequest("POST", fmt.Sprintf("delete_run/%d", runID), nil, nil)
 }

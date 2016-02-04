@@ -14,8 +14,7 @@ type Status struct {
 }
 
 // GetStatuses return the list of all possible statuses
-func (c *Client) GetStatuses() ([]Status, error) {
-	returnStatuses := []Status{}
-	err := c.sendRequest("GET", "get_statuses/", nil, &returnStatuses)
-	return returnStatuses, err
+func (c *Client) GetStatuses() (statuses []Status, err error) {
+	err = c.sendRequest("GET", "get_statuses", nil, &statuses)
+	return
 }

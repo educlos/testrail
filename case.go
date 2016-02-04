@@ -1,6 +1,9 @@
 package testrail
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 // Case represents a Test Case
 type Case struct {
@@ -34,15 +37,15 @@ type CustomStep struct {
 // RequestFilterForCases represents the filters
 // usable to get the test cases
 type RequestFilterForCases struct {
-	CreatedAfter  string `json:"created_after"`
-	CreatedBefore string `json:"created_before"`
-	CreatedBy     []int  `json:"created_by"`
-	MilestoneID   []int  `json:"milestone_id"`
-	PriorityID    []int  `json:"priority_id"`
-	TypeID        []int  `json:"type_id"`
-	UpdatedAfter  string `json:"updated_after"`
-	UpdatedBefore string `json:"updated_before"`
-	UpdatedBy     []int  `json:"updated_by"`
+	CreatedAfter  string  `json:"created_after,omitempty"`
+	CreatedBefore string  `json:"created_before,omitempty"`
+	CreatedBy     IntList `json:"created_by,omitempty"`
+	MilestoneID   IntList `json:"milestone_id,omitempty"`
+	PriorityID    IntList `json:"priority_id,omitempty"`
+	TypeID        IntList `json:"type_id,omitempty"`
+	UpdatedAfter  string  `json:"updated_after,omitempty"`
+	UpdatedBefore string  `json:"updated_before,omitempty"`
+	UpdatedBy     IntList `json:"updated_by,omitempty"`
 }
 
 // SendableCase represents a Test Case
@@ -59,7 +62,7 @@ type SendableCase struct {
 	Dropdown    int          `json:"custom_dropdown,omitempty"`
 	Integer     int          `json:"custom_integer,omitempty"`
 	Milestone   int          `json:"custom_milestone,omitempty"`
-	MultiSelect []int        `json:"custom_multi-select,omitempty"`
+	MultiSelect []int        `json:"custom_multi_select,omitempty"`
 	Steps       []CustomStep `json:"custom_steps,omitempty"`
 	String      string       `json:"custom_string,omitempty"`
 	Text        string       `json:"custom_text,omitempty"`
@@ -68,89 +71,51 @@ type SendableCase struct {
 }
 
 // GetCase returns the existing Test Case caseID
-func (c *Client) GetCase(caseID int) (Case, error) {
-	returnCase := Case{}
-	err := c.sendRequest("GET", fmt.Sprintf("get_case/%d", caseID), nil, &returnCase)
-	return returnCase, err
+func (c *Client) GetCase(caseID int) (case_ Case, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_case/%d", caseID), nil, &case_)
+	return
 }
 
 // GetCases returns a list of Test Cases on project projectID
 // for a Test Suite suiteID
 // or for specific section sectionID in a Test Suite
-func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, error) {
-	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
+func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) (cases []Case, err error) {
+	vals := make(url.Values)
+	vals.Set("suite_id", fmt.Sprintf("%d", suiteID))
+
 	if len(sectionID) > 0 {
-		uri = fmt.Sprintf("%s&section_id=%d", uri, sectionID[0])
+		vals.Set("section_id", fmt.Sprintf("%d", sectionID[0]))
 	}
 
-	returnCases := []Case{}
-	err := c.sendRequest("GET", uri, nil, &returnCases)
-	return returnCases, err
+	err = c.sendRequest("GET", fmt.Sprintf("get_cases/%d?%s", projectID, vals.Encode()), nil, &cases)
+	return
 }
 
 // GetCasesWithFilters returns a list of Test Cases on project projectID
 // for a Test Suite suiteID validating the filters
-func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) ([]Case, error) {
-	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
-	if len(filters) > 0 {
-		uri = applyFiltersForCase(uri, filters[0])
-	}
+func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) (cases []Case, err error) {
+	vals := make(url.Values)
+	vals.Set("suite_id", fmt.Sprintf("%d", suiteID))
 
-	returnCases := []Case{}
-	fmt.Println(uri)
-	err := c.sendRequest("GET", uri, nil, &returnCases)
-	return returnCases, err
+	loadOptionalFilters(vals, filters)
+
+	err = c.sendRequest("GET", fmt.Sprintf("get_cases/%d?%s", projectID, vals.Encode()), nil, &cases)
+	return
 }
 
 // AddCase creates a new Test Case newCase and returns it
-func (c *Client) AddCase(sectionID int, newCase SendableCase) (Case, error) {
-	createdCase := Case{}
-	err := c.sendRequest("POST", fmt.Sprintf("add_case/%d", sectionID), newCase, &createdCase)
-	return createdCase, err
+func (c *Client) AddCase(sectionID int, newCase SendableCase) (case_ Case, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("add_case/%d", sectionID), newCase, &case_)
+	return
 }
 
 // UpdateCase updates an existing Test Case caseID and returns it
-func (c *Client) UpdateCase(caseID int, updates SendableCase) (Case, error) {
-	updatedCase := Case{}
-	err := c.sendRequest("POST", fmt.Sprintf("update_case/%d", caseID), updates, &updatedCase)
-	return updatedCase, err
+func (c *Client) UpdateCase(caseID int, updates SendableCase) (case_ Case, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("update_case/%d", caseID), updates, &case_)
+	return
 }
 
 // DeleteCase deletes the existing Test Case caseID
 func (c *Client) DeleteCase(caseID int) error {
 	return c.sendRequest("POST", fmt.Sprintf("delete_case/%d", caseID), nil, nil)
-}
-
-// applyFiltersForCase go through each possible filters and create the
-// uri for the wanted ones
-func applyFiltersForCase(uri string, filters RequestFilterForCases) string {
-	if filters.CreatedAfter != "" {
-		uri = fmt.Sprintf("%s&created_after=%s", uri, filters.CreatedAfter)
-	}
-	if filters.CreatedBefore != "" {
-		uri = fmt.Sprintf("%s&created_before=%s", uri, filters.CreatedBefore)
-	}
-	if len(filters.CreatedBy) != 0 {
-		uri = applySpecificFilter(uri, "created_by", filters.CreatedBy)
-	}
-	if len(filters.MilestoneID) != 0 {
-		uri = applySpecificFilter(uri, "milestone_id", filters.MilestoneID)
-	}
-	if len(filters.PriorityID) != 0 {
-		uri = applySpecificFilter(uri, "priority_id", filters.PriorityID)
-	}
-	if len(filters.TypeID) != 0 {
-		uri = applySpecificFilter(uri, "type_id", filters.TypeID)
-	}
-	if filters.UpdatedAfter != "" {
-		uri = fmt.Sprintf("%s&updated_after=%s", uri, filters.UpdatedAfter)
-	}
-	if filters.UpdatedBefore != "" {
-		uri = fmt.Sprintf("%s&updated_before=%s", uri, filters.UpdatedBefore)
-	}
-	if len(filters.UpdatedBy) != 0 {
-		uri = applySpecificFilter(uri, "updated_by", filters.UpdatedBy)
-	}
-
-	return uri
 }

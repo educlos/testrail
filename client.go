@@ -18,7 +18,7 @@ type Client struct {
 	url        string
 	username   string
 	password   string
-	httpClient *http.Client
+	HTTPClient *http.Client
 }
 
 // NewClient returns a new client
@@ -35,7 +35,7 @@ func NewClient(url, username, password string) (c *Client) {
 	}
 	c.url += "index.php?/api/v2/"
 
-	c.httpClient = &http.Client{}
+	c.HTTPClient = http.DefaultClient
 
 	return
 }
@@ -63,13 +63,13 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
-	resp, err := c.httpClient.Do(req)
+	resp, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode > 299 {
+	if resp.StatusCode > 399 {
 		return fmt.Errorf("response: status=%q", resp.Status)
 	}
 

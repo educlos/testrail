@@ -10,8 +10,7 @@ type Priority struct {
 }
 
 // GetPriorities returns a list of available priorities
-func (c *Client) GetPriorities() ([]Priority, error) {
-	prios := []Priority{}
-	err := c.sendRequest("GET", "get_priorities/", nil, &prios)
-	return prios, err
+func (c *Client) GetPriorities() (priorities []Priority, err error) {
+	err = c.sendRequest("GET", "get_priorities/", nil, &priorities)
+	return
 }

@@ -30,8 +30,7 @@ type ResultFieldOption struct {
 }
 
 // GetResultFields returns a list of available test result custom fields
-func (c *Client) GetResultFields() ([]ResultField, error) {
-	caseFields := []ResultField{}
-	err := c.sendRequest("GET", "get_result_fields", nil, &caseFields)
-	return caseFields, err
+func (c *Client) GetResultFields() (fields []ResultField, err error) {
+	err = c.sendRequest("GET", "get_result_fields", nil, &fields)
+	return
 }
