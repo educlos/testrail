@@ -10,11 +10,7 @@ import (
 type IntList []int
 
 func (il IntList) MarshalJSON() ([]byte, error) {
-	var str []string
-	for _, i := range il {
-		str = append(str, fmt.Sprintf("%d", i))
-	}
-	return json.Marshal(strings.Join(str, ","))
+	return json.Marshal(intsList([]int(il)))
 }
 
 func intsList(ints []int) string {
