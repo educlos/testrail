@@ -7,8 +7,7 @@ type CaseType struct {
 }
 
 // Returns a list of available test case types
-func (c *Client) GetCaseTypes() ([]CaseType, error) {
-	caseTypes := []CaseType{}
-	err := c.sendRequest("GET", "get_case_types", nil, &caseTypes)
-	return caseTypes, err
+func (c *Client) GetCaseTypes() (types []CaseType, err error) {
+	err = c.sendRequest("GET", "get_case_types", nil, &types)
+	return
 }

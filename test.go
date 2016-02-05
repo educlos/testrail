@@ -1,6 +1,9 @@
 package testrail
 
-import "strconv"
+import (
+	"fmt"
+	"net/url"
+)
 
 // Test represent a Test
 type Test struct {
@@ -19,21 +22,20 @@ type Test struct {
 }
 
 // GetTest returns the test testID
-func (c *Client) GetTest(testID int) (Test, error) {
-	returnTest := Test{}
-	err := c.sendRequest("GET", "get_test/"+strconv.Itoa(testID), nil, &returnTest)
-	return returnTest, err
+func (c *Client) GetTest(testID int) (test Test, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_test/%d", testID), nil, &test)
+	return
 }
 
 // GetTests returns the list of tests of runID
 // with status statusID, if specified
-func (c *Client) GetTests(runID int, statusID ...[]int) ([]Test, error) {
-	returnTest := []Test{}
-	uri := "get_tests/" + strconv.Itoa(runID)
+func (c *Client) GetTests(runID int, statusID ...[]int) (tests []Test, err error) {
+	vals := make(url.Values)
 
 	if len(statusID) > 0 {
-		uri = applySpecificFilter(uri, "status_id", statusID[0])
+		vals.Set("status_id", intsList(statusID[0]))
 	}
-	err := c.sendRequest("GET", uri, nil, &returnTest)
-	return returnTest, err
+
+	err = c.sendRequest("GET", fmt.Sprintf("get_tests/%d?%s", runID, vals.Encode()), nil, &tests)
+	return
 }

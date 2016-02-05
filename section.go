@@ -1,6 +1,9 @@
 package testrail
 
-import "strconv"
+import (
+	"fmt"
+	"net/url"
+)
 
 // Section represents a Test Suite Section
 type Section struct {
@@ -30,40 +33,37 @@ type UpdatableSection struct {
 }
 
 // GetSection returns the section sectionID
-func (c *Client) GetSection(sectionID int) (Section, error) {
-	returnSection := Section{}
-	err := c.sendRequest("GET", "get_section/"+strconv.Itoa(sectionID), nil, &returnSection)
-	return returnSection, err
+func (c *Client) GetSection(sectionID int) (section Section, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_section/%d", sectionID), nil, &section)
+	return
 }
 
 // GetSections returns the list of sections of projectID
 // present in suite suiteID, if specified
-func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
-	returnSection := []Section{}
-	uri := "get_sections/" + strconv.Itoa(projectID)
+func (c *Client) GetSections(projectID int, suiteID ...int) (sections []Section, err error) {
+	vals := make(url.Values)
 
 	if len(suiteID) > 0 {
-		uri = uri + "&suite_id=" + strconv.Itoa(suiteID[0])
+		vals.Set("suite_id", fmt.Sprintf("%d", suiteID[0]))
 	}
-	err := c.sendRequest("GET", uri, nil, &returnSection)
-	return returnSection, err
+
+	err = c.sendRequest("GET", fmt.Sprintf("get_sections/%d?%s", projectID, vals.Encode()), nil, &sections)
+	return
 }
 
 // AddSection creates a new section on projectID and returns it
-func (c *Client) AddSection(projectID int, newSection SendableSection) (Section, error) {
-	createdSection := Section{}
-	err := c.sendRequest("POST", "add_section/"+strconv.Itoa(projectID), newSection, &createdSection)
-	return createdSection, err
+func (c *Client) AddSection(projectID int, newSection SendableSection) (section Section, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("add_section/%d", projectID), newSection, &section)
+	return
 }
 
 // UpdateSection updates the section sectionID and returns it
-func (c *Client) UpdateSection(sectionID int, update UpdatableSection) (Section, error) {
-	updatedSection := Section{}
-	err := c.sendRequest("POST", "update_section/"+strconv.Itoa(sectionID), update, &updatedSection)
-	return updatedSection, err
+func (c *Client) UpdateSection(sectionID int, update UpdatableSection) (section Section, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("update_section/%d", sectionID), update, &section)
+	return
 }
 
 // DeleteSection deletes the section sectionID
 func (c *Client) DeleteSection(sectionID int) error {
-	return c.sendRequest("POST", "delete_section/"+strconv.Itoa(sectionID), nil, nil)
+	return c.sendRequest("POST", fmt.Sprintf("delete_section/%d", sectionID), nil, nil)
 }

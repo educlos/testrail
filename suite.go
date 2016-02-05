@@ -1,6 +1,6 @@
 package testrail
 
-import "strconv"
+import "fmt"
 
 // Suite represenst a Test Suite
 type Suite struct {
@@ -23,34 +23,30 @@ type SendableSuite struct {
 }
 
 // GetSuite returns the suite suiteID
-func (c *Client) GetSuite(suiteID int) (Suite, error) {
-	returnSuite := Suite{}
-	err := c.sendRequest("GET", "get_suite/"+strconv.Itoa(suiteID), nil, &returnSuite)
-	return returnSuite, err
+func (c *Client) GetSuite(suiteID int) (suite Suite, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_suite/%d", suiteID), nil, &suite)
+	return
 }
 
 // GetSuites returns the list of suites on project projectID
-func (c *Client) GetSuites(projectID int) ([]Suite, error) {
-	returnSuite := []Suite{}
-	err := c.sendRequest("GET", "get_suites/"+strconv.Itoa(projectID), nil, &returnSuite)
-	return returnSuite, err
+func (c *Client) GetSuites(projectID int) (suites []Suite, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_suites/%d", projectID), nil, &suites)
+	return
 }
 
 // AddSuite creates a new suite on projectID and returns it
-func (c *Client) AddSuite(projectID int, newSuite SendableSuite) (Suite, error) {
-	createdSuite := Suite{}
-	err := c.sendRequest("POST", "add_suite/"+strconv.Itoa(projectID), newSuite, &createdSuite)
-	return createdSuite, err
+func (c *Client) AddSuite(projectID int, newSuite SendableSuite) (suite Suite, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("add_suite/%d", projectID), newSuite, &suite)
+	return
 }
 
 // UpdateSuite updates the suite suiteID and returns it
-func (c *Client) UpdateSuite(suiteID int, update SendableSuite) (Suite, error) {
-	updatedSuite := Suite{}
-	err := c.sendRequest("POST", "update_suite/"+strconv.Itoa(suiteID), update, &updatedSuite)
-	return updatedSuite, err
+func (c *Client) UpdateSuite(suiteID int, update SendableSuite) (suite Suite, err error) {
+	err = c.sendRequest("POST", fmt.Sprintf("update_suite/%d", suiteID), update, &suite)
+	return
 }
 
 // DeleteSuite delete the suite suiteID
 func (c *Client) DeleteSuite(suiteID int) error {
-	return c.sendRequest("POST", "delete_suite/"+strconv.Itoa(suiteID), nil, nil)
+	return c.sendRequest("POST", fmt.Sprintf("delete_suite/%d", suiteID), nil, nil)
 }

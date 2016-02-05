@@ -35,8 +35,7 @@ type CaseFieldOption struct {
 }
 
 // GetCaseFields returns a list of available case custom fields
-func (c *Client) GetCaseFields() ([]CaseField, error) {
-	caseFields := []CaseField{}
-	err := c.sendRequest("GET", "get_case_fields", nil, &caseFields)
-	return caseFields, err
+func (c *Client) GetCaseFields() (fields []CaseField, err error) {
+	err = c.sendRequest("GET", "get_case_fields", nil, &fields)
+	return
 }

@@ -1,6 +1,9 @@
 package testrail
 
-import "strconv"
+import (
+	"fmt"
+	"net/url"
+)
 
 // User represents a User
 type User struct {
@@ -11,22 +14,20 @@ type User struct {
 }
 
 // GetUser returns the user userID
-func (c *Client) GetUser(userID int) (User, error) {
-	returnUser := User{}
-	err := c.sendRequest("GET", "get_user/"+strconv.Itoa(userID), nil, &returnUser)
-	return returnUser, err
+func (c *Client) GetUser(userID int) (user User, err error) {
+	err = c.sendRequest("GET", fmt.Sprintf("get_user/%d", userID), nil, &user)
+	return
 }
 
 // GetUserByEmail returns the user corresponding to email email
-func (c *Client) GetUserByEmail(email string) (User, error) {
-	returnUser := User{}
-	err := c.sendRequest("GET", "get_user_by_email&email="+email, nil, &returnUser)
-	return returnUser, err
+func (c *Client) GetUserByEmail(email string) (user User, err error) {
+	vals := url.Values{"email": []string{email}}
+	err = c.sendRequest("GET", fmt.Sprintf("get_user_by_email?%s", vals.Encode()), nil, &user)
+	return
 }
 
 // GetUsers returns the list of users
-func (c *Client) GetUsers() ([]User, error) {
-	returnUser := []User{}
-	err := c.sendRequest("GET", "get_users", nil, &returnUser)
-	return returnUser, err
+func (c *Client) GetUsers() (users []User, err error) {
+	err = c.sendRequest("GET", "get_users", nil, &users)
+	return
 }
