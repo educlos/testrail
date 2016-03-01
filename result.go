@@ -80,10 +80,17 @@ type Results struct {
 	SendableResult
 }
 
+// Results represents a run result
+// that can be created or updated via the api
+type ResultsForCase struct {
+	CaseID int `json:"case_id"`
+	SendableResult
+}
+
 // SendableResultsForCase represents a Test Case result
 // that can be created or updated via the api
 type SendableResultsForCase struct {
-	Results []Results `json:"results"`
+	Results []ResultsForCase `json:"results"`
 }
 
 // GetResults returns a list of results for the test testID
@@ -147,11 +154,11 @@ func (c *Client) AddResults(runID int, newResult SendableResults) ([]Result, err
 	return createdResult, err
 }
 
-// AddResultsForCase adds new results, comments or assigns tests to run runID
+// AddResultsForCases adds new results, comments or assigns tests to run runID
 // each result being assigned to a test case
-func (c *Client) AddResultsForCase(runID int, newResult SendableResultsForCase) (Result, error) {
-	createdResult := Result{}
-	err := c.sendRequest("POST", "add_result_for_case/"+strconv.Itoa(runID), newResult, &createdResult)
+func (c *Client) AddResultsForCases(runID int, newResult SendableResultsForCase) ([]Result, error) {
+	createdResult := []Result{}
+	err := c.sendRequest("POST", "add_results_for_cases/"+strconv.Itoa(runID), newResult, &createdResult)
 	return createdResult, err
 }
 
