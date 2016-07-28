@@ -58,7 +58,7 @@ type SendableEntry struct {
 	SuiteID      int    `json:"suite_id"`
 	Name         string `json:"name,omitempty"`
 	AssignedtoID int    `json:"assignedto_id,omitempty"`
-	IncludeAll   bool   `json:"include_all,omitempty"`
+	IncludeAll   bool   `json:"include_all"`
 	CaseIDs      []int  `json:"case_ids,omitempty"`
 	ConfigIDs    []int  `json:"config_ids,omitempty"`
 	Runs         []Run  `json:"runs,omitempty"`
