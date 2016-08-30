@@ -51,7 +51,7 @@ type SendableRun struct {
 	MilestoneID  int    `json:"milestone_id,omitempty"`
 	AssignedToID int    `json:"assignedto_id,omitempty"`
 	IncludeAll   *bool  `json:"include_all,omitempty"`
-	CaseIDs      []int  `json:"case_id,omitempty"`
+	CaseIDs      []int  `json:"case_ids,omitempty"`
 }
 
 // UpdatableRun represents a Run
@@ -61,7 +61,7 @@ type UpdatableRun struct {
 	Description string `json:"description,omitempty"`
 	MilestoneID int    `json:"milestone_id,omitempty"`
 	IncludeAll  *bool  `json:"include_all,omitempty"`
-	CaseIDs     []int  `json:"case_id,omitempty"`
+	CaseIDs     []int  `json:"case_ids,omitempty"`
 }
 
 // GetRun returns the run runID
