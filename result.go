@@ -10,7 +10,7 @@ type Result struct {
 	CreatedOn         int                `json:"created_on"`
 	CustomStepResults []CustomStepResult `json:"custom_step_results"`
 	Defects           string             `json:"defects"`
-	Elapsed           int                `json:"elapsed"`
+	Elapsed           string             `json:"elapsed"`
 	ID                int                `json:"id"`
 	StatusID          int                `json:"status_id"`
 	TestID            int                `json:"test_id"`
