@@ -48,23 +48,12 @@ type RequestFilterForRunResults struct {
 // SendableResult represents a Test Case result
 // that can be created or updated via the api
 type SendableResult struct {
-	StatusID     int                `json:"status_id,omitempty"`
-	Comment      string             `json:"comment,omitempty"`
-	Version      string             `json:"version,omitempty"`
-	Elapsed      string             `json:"elapsed,omitempty"`
-	Defects      string             `json:"defects,omitempty"`
-	AssignedToID int                `json:"assignedto_id,omitempty"`
-	Checkbox     bool               `json:"custom_checkbox,omitempty"`
-	Date         string             `json:"custom_date,omitempty"`
-	Dropdown     int                `json:"custom_dropdown,omitempty"`
-	Integer      int                `json:"custom_integer,omitempty"`
-	Milestone    int                `json:"custom_milestone,omitempty"`
-	MultiSelect  []int              `json:"custom_multi-select,omitempty"`
-	StepsResults []CustomStepResult `json:"custom_step_results,omitempty"`
-	String       string             `json:"custom_string,omitempty"`
-	Text         string             `json:"custom_text,omitempty"`
-	URL          string             `json:"custom_url,omitempty"`
-	User         int                `json:"custom_user,omitempty"`
+	StatusID     int    `json:"status_id,omitempty"`
+	Comment      string `json:"comment,omitempty"`
+	Version      string `json:"version,omitempty"`
+	Elapsed      string `json:"elapsed,omitempty"`
+	Defects      string `json:"defects,omitempty"`
+	AssignedToID int    `json:"assignedto_id,omitempty"`
 }
 
 // SendableResults represents a list of run results

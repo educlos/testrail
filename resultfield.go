@@ -10,6 +10,7 @@ type ResultField struct {
 	Name         string              `json:"name"`
 	SystemName   string              `json:"system_name"`
 	TypeID       int                 `json:"type_id"`
+	IsActive     bool                `json:"is_active"`
 }
 
 // ResultFieldConfig represents a config

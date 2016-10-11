@@ -69,13 +69,13 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode > 299 {
-		return fmt.Errorf("response: status=%q", resp.Status)
-	}
-
 	jsonCnt, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("reading: %s", err)
+	}
+
+	if resp.StatusCode >= http.StatusBadRequest {
+		return fmt.Errorf("response: status: %q, body: %s", resp.Status, jsonCnt)
 	}
 
 	if v != nil {
