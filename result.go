@@ -4,17 +4,18 @@ import "strconv"
 
 // Result represents a Test Case result
 type Result struct {
-	AssignedtoID      int                `json:"assignedto_id"`
-	Comment           string             `json:"comment"`
-	CreatedBy         int                `json:"created_by"`
-	CreatedOn         timestamp          `json:"created_on"`
-	CustomStepResults []CustomStepResult `json:"custom_step_results"`
-	Defects           string             `json:"defects"`
-	Elapsed           timespan           `json:"elapsed"`
-	ID                int                `json:"id"`
-	StatusID          int                `json:"status_id"`
-	TestID            int                `json:"test_id"`
-	Version           string             `json:"version"`
+	AssignedtoID int       `json:"assignedto_id"`
+	Comment      string    `json:"comment"`
+	CreatedBy    int       `json:"created_by"`
+	CreatedOn    timestamp `json:"created_on"`
+	Defects      string    `json:"defects"`
+	Elapsed      timespan  `json:"elapsed"`
+	ID           int       `json:"id"`
+	StatusID     int       `json:"status_id"`
+	TestID       int       `json:"test_id"`
+	Version      string    `json:"version"`
+
+	customResult
 }
 
 // CustomStepResult represents the custom steps
@@ -54,6 +55,8 @@ type SendableResult struct {
 	Elapsed      timespan `json:"elapsed,omitempty"`
 	Defects      string   `json:"defects,omitempty"`
 	AssignedToID int      `json:"assignedto_id,omitempty"`
+
+	customResult
 }
 
 // SendableResults represents a list of run results
