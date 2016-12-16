@@ -48,23 +48,27 @@ type RequestFilterForCases struct {
 // SendableCase represents a Test Case
 // that can be created or updated via the api
 type SendableCase struct {
-	Title       string       `json:"title"`
-	TypeID      int          `json:"type_id,omitempty"`
-	PriorityID  int          `json:"priority_id,omitempty"`
-	Estimate    string       `json:"estimate,omitempty"`
-	MilestoneID int          `json:"milestone_id,omitempty"`
-	Refs        string       `json:"refs,omitempty"`
-	Checkbox    bool         `json:"custom_checkbox,omitempty"`
-	Date        string       `json:"custom_date,omitempty"`
-	Dropdown    int          `json:"custom_dropdown,omitempty"`
-	Integer     int          `json:"custom_integer,omitempty"`
-	Milestone   int          `json:"custom_milestone,omitempty"`
-	MultiSelect []int        `json:"custom_multi-select,omitempty"`
-	Steps       []CustomStep `json:"custom_steps,omitempty"`
-	String      string       `json:"custom_string,omitempty"`
-	Text        string       `json:"custom_text,omitempty"`
-	URL         string       `json:"custom_url,omitempty"`
-	User        int          `json:"custom_user,omitempty"`
+	Title         string       `json:"title"`
+	TypeID        int          `json:"type_id,omitempty"`
+	TemplateID    int          `json:"template_id,omitempty"`
+	PriorityID    int          `json:"priority_id,omitempty"`
+	Estimate      string       `json:"estimate,omitempty"`
+	MilestoneID   int          `json:"milestone_id,omitempty"`
+	Refs          string       `json:"refs,omitempty"`
+	Checkbox      bool         `json:"custom_checkbox,omitempty"`
+	Date          string       `json:"custom_date,omitempty"`
+	Dropdown      int          `json:"custom_dropdown,omitempty"`
+	Integer       int          `json:"custom_integer,omitempty"`
+	Milestone     int          `json:"custom_milestone,omitempty"`
+	MultiSelect   []int        `json:"custom_multi-select,omitempty"`
+	Steps         []CustomStep `json:"custom_steps_separated,omitempty"`
+	String        string       `json:"custom_string,omitempty"`
+	Text          string       `json:"custom_text,omitempty"`
+	URL           string       `json:"custom_url,omitempty"`
+	User          int          `json:"custom_user,omitempty"`
+	Preconditions string       `json:"custom_preconds,omitempty"`
+	Description   string       `json:"custom_detailed_description,omitempty"`
+	DeliveryTeam  int          `json:"custom_delivery_team,omitempty"`
 }
 
 // GetCase returns the existing Test Case caseID
