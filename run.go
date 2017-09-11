@@ -74,8 +74,13 @@ func (c *Client) GetRun(runID int) (Run, error) {
 // GetRuns returns the list of runs of projectID
 // validating the filters
 func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, error) {
+	uri := "get_runs/" + strconv.Itoa(projectID)
+	if len(filters) > 0 {
+		uri = applyFiltersForRuns(uri, filters[0])
+	}
+
 	returnRun := []Run{}
-	err := c.sendRequest("GET", "get_runs/"+strconv.Itoa(projectID), nil, &returnRun)
+	err := c.sendRequest("GET", uri, nil, &returnRun)
 	return returnRun, err
 }
 
