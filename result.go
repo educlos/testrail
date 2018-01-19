@@ -4,16 +4,16 @@ import "strconv"
 
 // Result represents a Test Case result
 type Result struct {
-	AssignedtoID int       `json:"assignedto_id"`
-	Comment      string    `json:"comment"`
-	CreatedBy    int       `json:"created_by"`
-	CreatedOn    timestamp `json:"created_on"`
-	Defects      string    `json:"defects"`
-	Elapsed      timespan  `json:"elapsed"`
-	ID           int       `json:"id"`
-	StatusID     int       `json:"status_id"`
-	TestID       int       `json:"test_id"`
-	Version      string    `json:"version"`
+	AssignedtoID int    `json:"assignedto_id"`
+	Comment      string `json:"comment"`
+	CreatedBy    int    `json:"created_by"`
+	CreatedOn    int    `json:"created_on"`
+	Defects      string `json:"defects"`
+	Elapsed      string `json:"elapsed"`
+	ID           int    `json:"id"`
+	StatusID     int    `json:"status_id"`
+	TestID       int    `json:"test_id"`
+	Version      string `json:"version"`
 
 	customResult
 }
@@ -49,12 +49,12 @@ type RequestFilterForRunResults struct {
 // SendableResult represents a Test Case result
 // that can be created or updated via the api
 type SendableResult struct {
-	StatusID     int      `json:"status_id,omitempty"`
-	Comment      string   `json:"comment,omitempty"`
-	Version      string   `json:"version,omitempty"`
-	Elapsed      timespan `json:"elapsed,omitempty"`
-	Defects      string   `json:"defects,omitempty"`
-	AssignedToID int      `json:"assignedto_id,omitempty"`
+	StatusID     int    `json:"status_id,omitempty"`
+	Comment      string `json:"comment,omitempty"`
+	Version      string `json:"version,omitempty"`
+	Elapsed      string `json:"elapsed,omitempty"`
+	Defects      string `json:"defects,omitempty"`
+	AssignedToID int    `json:"assignedto_id,omitempty"`
 
 	customResult
 }

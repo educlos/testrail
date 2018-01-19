@@ -3,6 +3,7 @@ package testrail
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -35,7 +36,10 @@ func NewClient(url, username, password string) (c *Client) {
 	}
 	c.url += "index.php?/api/v2/"
 
-	c.httpClient = &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	c.httpClient = &http.Client{Transport: tr}
 
 	return
 }
