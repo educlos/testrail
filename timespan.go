@@ -18,6 +18,15 @@ type timespan struct {
 	time.Duration
 }
 
+// TimespanFromDuration converts a standard Go time duration into a testrail compatible timespan.
+func TimespanFromDuration(duration time.Duration) *timespan {
+	if duration == 0 {
+		return nil
+	}
+
+	return &timespan{duration}
+}
+
 // Unmarshal TestRail timespan into a time.Duration.
 // Transform TestRail-specific formats into something time.ParseDuration understands:
 //   "4h 5m 6s" => "4h5m6s"

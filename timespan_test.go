@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTimespanUnmarshal(t *testing.T) {
@@ -72,4 +74,19 @@ func TestTimespanMarshal(t *testing.T) {
 			t.Fatalf("Wrong data: %v", string(data))
 		}
 	}
+}
+
+func TestTimespanFromDurationValidDuration(t *testing.T) {
+	start := time.Now()
+	time.Sleep(5 * time.Millisecond)
+	d := time.Since(start)
+	ts := TimespanFromDuration(d)
+	assert.NotNil(t, ts)
+	assert.Equal(t, d, ts.Duration)
+}
+
+func TestTimespanFromDurationInvalidDuration(t *testing.T) {
+	d, _ := time.ParseDuration("0s")
+	ts := TimespanFromDuration(d)
+	assert.Nil(t, ts)
 }
