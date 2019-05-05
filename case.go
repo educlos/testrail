@@ -62,6 +62,7 @@ type SendableCase struct {
 	MultiSelect []int        `json:"custom_multi-select,omitempty"`
 	Steps       []CustomStep `json:"custom_steps,omitempty"`
 	String      string       `json:"custom_string,omitempty"`
+	TemplateId  int          `json:"template_id,omitempty"`
 	Text        string       `json:"custom_text,omitempty"`
 	URL         string       `json:"custom_url,omitempty"`
 	User        int          `json:"custom_user,omitempty"`
