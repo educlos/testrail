@@ -55,13 +55,13 @@ type SendablePlan struct {
 // SendableEntry represents an Entry
 // that can be created or updated via the api
 type SendableEntry struct {
-	SuiteID      int    `json:"suite_id"`
-	Name         string `json:"name,omitempty"`
-	AssignedtoID int    `json:"assignedto_id,omitempty"`
-	IncludeAll   bool   `json:"include_all"`
-	CaseIDs      []int  `json:"case_ids,omitempty"`
-	ConfigIDs    []int  `json:"config_ids,omitempty"`
-	Runs         []Run  `json:"runs,omitempty"`
+	SuiteID      int           `json:"suite_id"`
+	Name         string        `json:"name,omitempty"`
+	AssignedtoID int           `json:"assignedto_id,omitempty"`
+	IncludeAll   bool          `json:"include_all"`
+	CaseIDs      []int         `json:"case_ids,omitempty"`
+	ConfigIDs    []int         `json:"config_ids,omitempty"`
+	Runs         []SendableRun `json:"runs,omitempty"`
 }
 
 // GetPlan returns the existing plan planID
