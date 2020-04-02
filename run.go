@@ -4,29 +4,36 @@ import "strconv"
 
 // Run represents a Run
 type Run struct {
-	AssignedToID  int    `json:"assignedto_id"`
-	BlockedCount  int    `json:"blocked_count"`
-	CompletedOn   int    `json:"completed_on"`
-	Config        string `json:"config"`
-	ConfigIDs     []int  `json:"config_ids"`
-	CreatedBy     int    `json:"created_by"`
-	CreatedOn     int    `json:"created_on"`
-	Description   string `json:"description"`
-	EntryID       string `json:"entry_id"`
-	EntryIndex    int    `json:"entry_index"`
-	FailedCount   int    `json:"failed_count"`
-	ID            int    `json:"id"`
-	IncludeAll    bool   `json:"include_all"`
-	IsCompleted   bool   `json:"is_completed"`
-	MilestoneID   int    `json:"milestone_id"`
-	Name          string `json:"name"`
-	PassedCount   int    `json:"passed_count"`
-	PlanID        int    `json:"plan_id"`
-	ProjectID     int    `json:"project_id"`
-	RetestCount   int    `json:"retest_count"`
-	SuiteID       int    `json:"suite_id"`
-	UntestedCount int    `json:"untested_count"`
-	URL           string `json:"url"`
+	AssignedToID       int    `json:"assignedto_id"`
+	BlockedCount       int    `json:"blocked_count"`
+	CompletedOn        int    `json:"completed_on"`
+	Config             string `json:"config"`
+	ConfigIDs          []int  `json:"config_ids"`
+	CreatedBy          int    `json:"created_by"`
+	CreatedOn          int    `json:"created_on"`
+	Description        string `json:"description"`
+	EntryID            string `json:"entry_id"`
+	EntryIndex         int    `json:"entry_index"`
+	FailedCount        int    `json:"failed_count"`
+	ID                 int    `json:"id"`
+	IncludeAll         bool   `json:"include_all"`
+	IsCompleted        bool   `json:"is_completed"`
+	MilestoneID        int    `json:"milestone_id"`
+	Name               string `json:"name"`
+	PassedCount        int    `json:"passed_count"`
+	PlanID             int    `json:"plan_id"`
+	ProjectID          int    `json:"project_id"`
+	RetestCount        int    `json:"retest_count"`
+	SuiteID            int    `json:"suite_id"`
+	UntestedCount      int    `json:"untested_count"`
+	URL                string `json:"url"`
+	CustomStatus1Count int    `json:"custom_status1_count"`
+	CustomStatus2Count int    `json:"custom_status2_count"`
+	CustomStatus3Count int    `json:"custom_status3_count"`
+	CustomStatus4Count int    `json:"custom_status4_count"`
+	CustomStatus5Count int    `json:"custom_status5_count"`
+	CustomStatus6Count int    `json:"custom_status6_count"`
+	CustomStatus7Count int    `json:"custom_status7_count"`
 }
 
 // RequestFilterForRun represents the filters
