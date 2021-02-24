@@ -49,6 +49,7 @@ type RequestFilterForCases struct {
 // that can be created or updated via the api
 type SendableCase struct {
 	Title           string       `json:"title"`
+	Testability     int          `json:"custom_testable"`
 	TypeID          int          `json:"type_id,omitempty"`
 	PriorityID      int          `json:"priority_id,omitempty"`
 	Estimate        string       `json:"estimate,omitempty"`
@@ -60,6 +61,7 @@ type SendableCase struct {
 	Integer         int          `json:"custom_integer,omitempty"`
 	Milestone       int          `json:"custom_milestone,omitempty"`
 	MultiSelect     []int        `json:"custom_multi-select,omitempty"`
+	Preconditions   string       `json:"custom_preconds,omitempty"`
 	Steps           []CustomStep `json:"custom_steps,omitempty"`
 	String          string       `json:"custom_string,omitempty"`
 	TemplateId      int          `json:"template_id,omitempty"`
