@@ -86,8 +86,14 @@ func (c *Client) GetPlans(projectID int, filters ...RequestFilterForPlan) ([]Pla
 		uri = applyFiltersForPlan(uri, filters[0])
 	}
 
+	var err error
 	returnPlans := []Plan{}
-	err := c.sendRequest("GET", uri, nil, &returnPlans)
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnPlans, "plans")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnPlans)
+	}
+
 	return returnPlans, err
 }
 

@@ -1,6 +1,8 @@
 package testrail
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // Milestone represents a Milestone
 type Milestone struct {
@@ -36,9 +38,15 @@ func (c *Client) GetMilestones(projectID int, isCompleted ...bool) ([]Milestone,
 	if len(isCompleted) > 0 {
 		uri = uri + "&is_completed=" + btoitos(isCompleted[0])
 	}
-
+	var err error
 	returnMilestones := []Milestone{}
-	err := c.sendRequest("GET", uri, nil, &returnMilestones)
+
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnMilestones, "milestones")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnMilestones)
+	}
+
 	return returnMilestones, err
 }
 

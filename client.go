@@ -19,12 +19,13 @@ type Client struct {
 	username   string
 	password   string
 	httpClient *http.Client
+	useBetaApi bool
 }
 
 // NewClient returns a new client
 // with the given credential
 // for the given testrail domain
-func NewClient(url, username, password string) (c *Client) {
+func NewClient(url, username, password string, useBetaApi ...bool) (c *Client) {
 	c = &Client{}
 	c.username = username
 	c.password = password
@@ -36,6 +37,10 @@ func NewClient(url, username, password string) (c *Client) {
 	c.url += "index.php?/api/v2/"
 
 	c.httpClient = &http.Client{}
+
+	if len(useBetaApi) > 0 {
+		c.useBetaApi = useBetaApi[0]
+	}
 
 	return
 }
@@ -63,6 +68,10 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 
+	if c.useBetaApi {
+		req.Header.Add("x-api-ident", "beta")
+	}
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
@@ -84,6 +93,47 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 			return fmt.Errorf("unmarshaling response: %s", err)
 		}
 	}
+
+	return nil
+}
+
+type Links struct {
+	Next string `json:"next"`
+	Prev string `json:"prev"`
+}
+
+func (c *Client) sendRequestBeta(method, uri string, data, v interface{}, itemsKeyName string) error {
+	var wraperMap map[string]json.RawMessage
+	var returnItems []interface{}
+	var tempItems []interface{}
+	var links Links
+
+	err := c.sendRequest("GET", uri, nil, &wraperMap)
+	if err != nil {
+		return err
+	}
+
+	json.Unmarshal(wraperMap[itemsKeyName], &tempItems)
+	json.Unmarshal(wraperMap["_links"], &links)
+
+	returnItems = tempItems
+
+	for err == nil && links.Next != "" && len(tempItems) == 250 {
+		nextUri := strings.TrimPrefix(links.Next, "/api/v2/")
+		err = c.sendRequest("GET", nextUri, nil, &wraperMap)
+		if err == nil {
+			json.Unmarshal(wraperMap[itemsKeyName], &tempItems)
+			json.Unmarshal(wraperMap["_links"], &links)
+			for _, val := range tempItems {
+				returnItems = append(returnItems, val)
+			}
+		} else {
+			return err
+		}
+	}
+
+	jsonAll, _ := json.Marshal(returnItems)
+	json.Unmarshal(jsonAll, v)
 
 	return nil
 }
