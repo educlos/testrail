@@ -26,6 +26,18 @@ type Client struct {
 // with the given credential
 // for the given testrail domain
 func NewClient(url, username, password string, useBetaApi ...bool) (c *Client) {
+	_useBetaApi := false
+	if len(useBetaApi) > 0 {
+		_useBetaApi = useBetaApi[0]
+	}
+	return NewCustomClient(url, username, password, nil, _useBetaApi)
+}
+
+// NewClient returns a new client with
+// with the given credential
+// for the given testrail domain
+// and custom http Client
+func NewCustomClient(url, username, password string, customHttpClient *http.Client, useBetaApi ...bool) (c *Client) {
 	c = &Client{}
 	c.username = username
 	c.password = password
@@ -36,7 +48,11 @@ func NewClient(url, username, password string, useBetaApi ...bool) (c *Client) {
 	}
 	c.url += "index.php?/api/v2/"
 
-	c.httpClient = &http.Client{}
+	if customHttpClient != nil {
+		c.httpClient = customHttpClient
+	} else {
+		c.httpClient = &http.Client{}
+	}
 
 	if len(useBetaApi) > 0 {
 		c.useBetaApi = useBetaApi[0]
