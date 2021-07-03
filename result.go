@@ -120,7 +120,12 @@ func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResul
 	if len(filters) > 0 {
 		uri = applyFiltersForRunResults(uri, filters[0])
 	}
-	err := c.sendRequest("GET", uri, nil, &returnResults)
+	var err error
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnResults, "results")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnResults)
+	}
 	return returnResults, err
 }
 

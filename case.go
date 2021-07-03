@@ -86,7 +86,12 @@ func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, err
 	}
 
 	returnCases := []Case{}
-	err := c.sendRequest("GET", uri, nil, &returnCases)
+	var err error
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnCases, "cases")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnCases)
+	}
 	return returnCases, err
 }
 

@@ -56,6 +56,16 @@ func testClient(t *testing.T) {
 	if c2.url != "http://example.com/index.php?/api/v2/" {
 		t.Fatal("Expected valid url but got ", c2.url)
 	}
+
+	if c2.useBetaApi {
+		t.Fatal("Expected useBetaApi ´false´ but got ", c2.useBetaApi)
+	}
+
+	c3 := NewClient("http://example.com/", "testUsername", "testPassword", true)
+
+	if !c3.useBetaApi {
+		t.Fatal("Expected useBetaApi ´true´ but got ", c2.useBetaApi)
+	}
 }
 
 // testValidGetRequest tests the sendRequest method for a GET
