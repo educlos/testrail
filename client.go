@@ -114,8 +114,8 @@ func (c *Client) sendRequest(method, uri string, data, v interface{}) error {
 }
 
 type Links struct {
-	Next string `json:"next"`
-	Prev string `json:"prev"`
+	Next *string `json:"next"`
+	Prev *string `json:"prev"`
 }
 
 func (c *Client) sendRequestBeta(method, uri string, data, v interface{}, itemsKeyName string) error {
@@ -134,8 +134,8 @@ func (c *Client) sendRequestBeta(method, uri string, data, v interface{}, itemsK
 
 	returnItems = tempItems
 
-	for err == nil && links.Next != "" && len(tempItems) == 250 {
-		nextUri := strings.TrimPrefix(links.Next, "/api/v2/")
+	for err == nil && links.Next != nil {
+		nextUri := strings.TrimPrefix(*links.Next, "/api/v2/")
 		err = c.sendRequest("GET", nextUri, nil, &wraperMap)
 		if err == nil {
 			json.Unmarshal(wraperMap[itemsKeyName], &tempItems)
