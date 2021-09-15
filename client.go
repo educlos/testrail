@@ -132,7 +132,7 @@ func (c *Client) sendRequestBeta(method, uri string, data, v interface{}, itemsK
 	json.Unmarshal(wraperMap[itemsKeyName], &tempItems)
 	json.Unmarshal(wraperMap["_links"], &links)
 
-	returnItems = tempItems
+	returnItems = append(returnItems, tempItems...)
 
 	for err == nil && links.Next != nil {
 		nextUri := strings.TrimPrefix(*links.Next, "/api/v2/")
@@ -140,9 +140,7 @@ func (c *Client) sendRequestBeta(method, uri string, data, v interface{}, itemsK
 		if err == nil {
 			json.Unmarshal(wraperMap[itemsKeyName], &tempItems)
 			json.Unmarshal(wraperMap["_links"], &links)
-			for _, val := range tempItems {
-				returnItems = append(returnItems, val)
-			}
+			returnItems = append(returnItems, tempItems...)
 		} else {
 			return err
 		}
