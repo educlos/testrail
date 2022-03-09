@@ -22,6 +22,7 @@ type Case struct {
 	TypeID               int          `json:"type_id"`
 	UpdatedBy            int          `json:"updated_by"`
 	UdpatedOn            int          `json:"updated_on"`
+	State                int          `json:"custom_state,omitempty"`
 }
 
 // CustomStep represents the custom steps
@@ -56,6 +57,7 @@ type SendableCase struct {
 	Refs            string       `json:"refs,omitempty"`
 	Checkbox        bool         `json:"custom_checkbox,omitempty"`
 	Date            string       `json:"custom_date,omitempty"`
+	State           int          `json:"custom_state,omitempty"`
 	Dropdown        int          `json:"custom_dropdown,omitempty"`
 	Integer         int          `json:"custom_integer,omitempty"`
 	Milestone       int          `json:"custom_milestone,omitempty"`
