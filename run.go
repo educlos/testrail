@@ -59,6 +59,7 @@ type SendableRun struct {
 	AssignedToID int    `json:"assignedto_id,omitempty"`
 	IncludeAll   *bool  `json:"include_all,omitempty"`
 	CaseIDs      []int  `json:"case_ids,omitempty"`
+	ConfigIDs    []int  `json:"config_ids,omitempty"`
 }
 
 // UpdatableRun represents a Run
