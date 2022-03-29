@@ -14,6 +14,7 @@ type Case struct {
 	EstimateForecast     string       `json:"estimate_forecast"`
 	ID                   int          `json:"id"`
 	MilestoneID          int          `json:"milestone_id"`
+	Ownership            string       `json:"custom_ownership"`
 	PriorityID           int          `json:"priority_id"`
 	Refs                 string       `json:"refs"`
 	SectionID            int          `json:"section_id"`
@@ -21,7 +22,7 @@ type Case struct {
 	Title                string       `json:"title"`
 	TypeID               int          `json:"type_id"`
 	UpdatedBy            int          `json:"updated_by"`
-	UdpatedOn            int          `json:"updated_on"`
+	UpdatedOn            int          `json:"updated_on"`
 }
 
 // CustomStep represents the custom steps
@@ -61,6 +62,7 @@ type SendableCase struct {
 	Integer         int          `json:"custom_integer,omitempty"`
 	Milestone       int          `json:"custom_milestone,omitempty"`
 	MultiSelect     []int        `json:"custom_multi-select,omitempty"`
+	Ownership       string       `json:"custom_ownership"`
 	Preconditions   string       `json:"custom_preconds,omitempty"`
 	Steps           string       `json:"custom_steps,omitempty"`
 	ExpectedResult  string       `json:"custom_expected,omitempty"`
