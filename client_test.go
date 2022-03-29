@@ -36,8 +36,7 @@ func newResponse(body string) *http.Response {
 func TestSendRequest(t *testing.T) {
 	testClient(t)
 
-	c := NewClient("http://example.com", "testUsername", "testPassword")
-	c.httpClient = NewTestClient(newResponse(`{ "status_id": 1 }`), nil)
+	c := NewCustomClient("http://example.com", "testUsername", "testPassword", NewTestClient(newResponse(`{ "status_id": 1 }`), nil))
 
 	testValidGetRequest(t, c)
 	testInvalidGetRequest(t, c)
@@ -56,6 +55,16 @@ func testClient(t *testing.T) {
 
 	if c2.url != "http://example.com/index.php?/api/v2/" {
 		t.Fatal("Expected valid url but got ", c2.url)
+	}
+
+	if c2.useBetaApi {
+		t.Fatal("Expected useBetaApi ´false´ but got ", c2.useBetaApi)
+	}
+
+	c3 := NewClient("http://example.com/", "testUsername", "testPassword", true)
+
+	if !c3.useBetaApi {
+		t.Fatal("Expected useBetaApi ´true´ but got ", c2.useBetaApi)
 	}
 }
 

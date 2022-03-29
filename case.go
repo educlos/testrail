@@ -23,6 +23,7 @@ type Case struct {
 	TypeID               int          `json:"type_id"`
 	UpdatedBy            int          `json:"updated_by"`
 	UpdatedOn            int          `json:"updated_on"`
+	State                int          `json:"custom_state,omitempty"`
 }
 
 // CustomStep represents the custom steps
@@ -58,6 +59,7 @@ type SendableCase struct {
 	Refs            string       `json:"refs,omitempty"`
 	Checkbox        bool         `json:"custom_checkbox,omitempty"`
 	Date            string       `json:"custom_date,omitempty"`
+	State           int          `json:"custom_state,omitempty"`
 	Dropdown        int          `json:"custom_dropdown,omitempty"`
 	Integer         int          `json:"custom_integer,omitempty"`
 	Milestone       int          `json:"custom_milestone,omitempty"`
@@ -92,8 +94,31 @@ func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, err
 	}
 
 	returnCases := []Case{}
-	err := c.sendRequest("GET", uri, nil, &returnCases)
+	var err error
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &returnCases, "cases")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &returnCases)
+	}
 	return returnCases, err
+}
+
+// GetCasesWithCustomFields returns a interface that can be mapped to an array that contains custom fields
+// on project projectID for a Test Suite suiteID
+// or for specific section sectionID in a Test Suite
+func (c *Client) GetCasesWithCustomFields(projectID, suiteID int, customArray interface{}, sectionID ...int) error {
+	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
+	if len(sectionID) > 0 {
+		uri = fmt.Sprintf("%s&section_id=%d", uri, sectionID[0])
+	}
+
+	var err error
+	if c.useBetaApi {
+		err = c.sendRequestBeta("GET", uri, nil, &customArray, "cases")
+	} else {
+		err = c.sendRequest("GET", uri, nil, &customArray)
+	}
+	return err
 }
 
 // GetCasesWithFilters returns a list of Test Cases on project projectID
