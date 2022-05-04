@@ -23,7 +23,7 @@ type Case struct {
 	UpdatedBy            int          `json:"updated_by"`
 	UdpatedOn            int          `json:"updated_on"`
 	State                int          `json:"custom_state,omitempty"`
-	CustomTestRunConfig  []int        `json:"custom_testrun_configs"`
+	CustomTestRunConfig  []int        `json:"custom_testrun_configs,omitempty"`
 }
 
 // CustomStep represents the custom steps
@@ -70,7 +70,7 @@ type SendableCase struct {
 	Text                string       `json:"custom_text,omitempty"`
 	URL                 string       `json:"custom_url,omitempty"`
 	User                int          `json:"custom_user,omitempty"`
-	CustomTestRunConfig []int        `json:"custom_testrun_configs"`
+	CustomTestRunConfig []int        `json:"custom_testrun_configs,omitempty"`
 }
 
 // GetCase returns the existing Test Case caseID
