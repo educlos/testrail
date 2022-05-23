@@ -32,6 +32,7 @@ type CaseFieldOption struct {
 	Format       string `json:"format"`
 	IsRequired   bool   `json:"is_required"`
 	Rows         string `json:"rows"`
+	Items        string `json:"items"`
 }
 
 // GetCaseFields returns a list of available case custom fields
