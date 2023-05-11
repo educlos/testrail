@@ -18,6 +18,7 @@ type Plan struct {
 	Name               string  `json:"name"`
 	PassedCount        int     `json:"passed_count"`
 	ProjectID          int     `json:"project_id"`
+	Refs               string  `json:"refs"`
 	RetestCount        int     `json:"retest_count"`
 	UntestedCount      int     `json:"untested_count"`
 	URL                string  `json:"url"`
