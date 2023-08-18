@@ -1,1 +1,16 @@
 client.sublime-workspace
+.DS_Store
+.idea/
+.vscode/
+.project
+__pycache__/
+.pytest_cache/
+vendor/
+*.ipk
+*.pyc
+*.swp
+*.class
+*.dylib
+*.so
+*.log*
+*_cache.json
