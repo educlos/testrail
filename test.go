@@ -18,6 +18,10 @@ type Test struct {
 	TypeID           int    `json:"type_id"`
 }
 
+type Tests struct {
+	Tests []Test `json:"tests"`
+}
+
 // GetTest returns the test testID
 func (c *Client) GetTest(testID int) (Test, error) {
 	returnTest := Test{}
@@ -28,7 +32,7 @@ func (c *Client) GetTest(testID int) (Test, error) {
 // GetTests returns the list of tests of runID
 // with status statusID, if specified
 func (c *Client) GetTests(runID int, statusID ...[]int) ([]Test, error) {
-	returnTest := []Test{}
+	returnTest := Tests{}
 	uri := "get_tests/" + strconv.Itoa(runID)
 
 	if len(statusID) > 0 {
@@ -40,5 +44,5 @@ func (c *Client) GetTests(runID int, statusID ...[]int) ([]Test, error) {
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnTest)
 	}
-	return returnTest, err
+	return returnTest.Tests, err
 }

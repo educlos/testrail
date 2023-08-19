@@ -26,6 +26,10 @@ type Case struct {
 	CustomTestRunConfig  []int        `json:"custom_testrun_configs,omitempty"`
 }
 
+type Cases struct {
+	Cases []Case `json:"cases"`
+}
+
 // CustomStep represents the custom steps
 // a Test Case can have
 type CustomStep struct {
@@ -89,14 +93,14 @@ func (c *Client) GetCases(projectID, suiteID int, sectionID ...int) ([]Case, err
 		uri = fmt.Sprintf("%s&section_id=%d", uri, sectionID[0])
 	}
 
-	returnCases := []Case{}
+	returnCases := Cases{}
 	var err error
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnCases, "cases")
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnCases)
 	}
-	return returnCases, err
+	return returnCases.Cases, err
 }
 
 // GetCasesWithCustomFields returns a interface that can be mapped to an array that contains custom fields
