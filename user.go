@@ -26,7 +26,10 @@ func (c *Client) GetUserByEmail(email string) (User, error) {
 
 // GetUsers returns the list of users
 func (c *Client) GetUsers() ([]User, error) {
-	returnUser := []User{}
+	returnUser := struct {
+		Users []User `json:"users"`
+	}{}
+
 	err := c.sendRequest("GET", "get_users", nil, &returnUser)
-	return returnUser, err
+	return returnUser.Users, err
 }

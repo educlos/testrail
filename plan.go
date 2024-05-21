@@ -88,14 +88,16 @@ func (c *Client) GetPlans(projectID int, filters ...RequestFilterForPlan) ([]Pla
 	}
 
 	var err error
-	returnPlans := []Plan{}
+	returnPlans := struct {
+		Plans []Plan `json:"plans"`
+	}{}
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnPlans, "plans")
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnPlans)
 	}
 
-	return returnPlans, err
+	return returnPlans.Plans, err
 }
 
 // AddPlan creates a new plan on project projectID and returns it

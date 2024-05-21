@@ -124,7 +124,9 @@ func (c *Client) GetResultsForCase(runID, caseID int, filters ...RequestFilterFo
 // GetResultsForRun returns a list of results for the run runID
 // validating the filters
 func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResults) ([]Result, error) {
-	returnResults := []Result{}
+	returnResults := struct {
+		Results []Result `json:"results"`
+	}{}
 	uri := "get_results_for_run/" + strconv.Itoa(runID)
 
 	if len(filters) > 0 {
@@ -136,7 +138,7 @@ func (c *Client) GetResultsForRun(runID int, filters ...RequestFilterForRunResul
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnResults)
 	}
-	return returnResults, err
+	return returnResults.Results, err
 }
 
 // AddResult adds a new result, comment or assigns a test to testID

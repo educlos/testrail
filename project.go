@@ -40,14 +40,16 @@ func (c *Client) GetProjects(isCompleted ...bool) ([]Project, error) {
 		uri = uri + "&is_completed=" + btoitos(isCompleted[0])
 	}
 
-	returnProjects := []Project{}
+	returnProjects := struct {
+		Projects []Project `json:"projects"`
+	}{}
 	var err error
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnProjects, "projects")
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnProjects)
 	}
-	return returnProjects, err
+	return returnProjects.Projects, err
 }
 
 // AddProject creates a new project and return its
