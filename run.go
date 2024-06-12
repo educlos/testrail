@@ -26,6 +26,7 @@ type Run struct {
 	RetestCount        int    `json:"retest_count"`
 	SuiteID            int    `json:"suite_id"`
 	UntestedCount      int    `json:"untested_count"`
+	UpdatedOn          int    `json:"updated_on"`
 	URL                string `json:"url"`
 	CustomStatus1Count int    `json:"custom_status1_count"`
 	CustomStatus2Count int    `json:"custom_status2_count"`
@@ -87,14 +88,16 @@ func (c *Client) GetRuns(projectID int, filters ...RequestFilterForRun) ([]Run, 
 		uri = applyFiltersForRuns(uri, filters[0])
 	}
 
-	returnRun := []Run{}
+	returnRun := struct {
+		Runs []Run `json:"runs"`
+	}{}
 	var err error
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnRun, "runs")
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnRun)
 	}
-	return returnRun, err
+	return returnRun.Runs, err
 }
 
 // AddRun creates a new run on projectID and returns it

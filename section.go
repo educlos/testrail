@@ -39,7 +39,9 @@ func (c *Client) GetSection(sectionID int) (Section, error) {
 // GetSections returns the list of sections of projectID
 // present in suite suiteID, if specified
 func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
-	returnSection := []Section{}
+	returnSection := struct {
+		Sections []Section `json:"section"`
+	}{}
 	uri := "get_sections/" + strconv.Itoa(projectID)
 
 	if len(suiteID) > 0 {
@@ -51,7 +53,7 @@ func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	} else {
 		err = c.sendRequest("GET", uri, nil, &returnSection)
 	}
-	return returnSection, err
+	return returnSection.Sections, err
 }
 
 // AddSection creates a new section on projectID and returns it

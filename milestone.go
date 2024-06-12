@@ -39,7 +39,9 @@ func (c *Client) GetMilestones(projectID int, isCompleted ...bool) ([]Milestone,
 		uri = uri + "&is_completed=" + btoitos(isCompleted[0])
 	}
 	var err error
-	returnMilestones := []Milestone{}
+	returnMilestones := struct {
+		Milestones []Milestone `json:"milestones"`
+	}{}
 
 	if c.useBetaApi {
 		err = c.sendRequestBeta("GET", uri, nil, &returnMilestones, "milestones")
@@ -47,7 +49,7 @@ func (c *Client) GetMilestones(projectID int, isCompleted ...bool) ([]Milestone,
 		err = c.sendRequest("GET", uri, nil, &returnMilestones)
 	}
 
-	return returnMilestones, err
+	return returnMilestones.Milestones, err
 }
 
 // AddMilestone creates a new milestone on project projectID and returns it
