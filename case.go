@@ -123,13 +123,13 @@ func (c *Client) GetCasesWithCustomFields(projectID, suiteID int, customArray in
 
 // GetCasesWithFilters returns a list of Test Cases on project projectID
 // for a Test Suite suiteID validating the filters
-func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) ([]Case, error) {
+func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestFilterForCases) (Cases, error) {
 	uri := fmt.Sprintf("get_cases/%d&suite_id=%d", projectID, suiteID)
 	if len(filters) > 0 {
 		uri = applyFiltersForCase(uri, filters[0])
 	}
 
-	returnCases := []Case{}
+	returnCases := Cases{}
 	fmt.Println(uri)
 	err := c.sendRequest("GET", uri, nil, &returnCases)
 	return returnCases, err
