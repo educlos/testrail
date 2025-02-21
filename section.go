@@ -40,7 +40,7 @@ func (c *Client) GetSection(sectionID int) (Section, error) {
 // present in suite suiteID, if specified
 func (c *Client) GetSections(projectID int, suiteID ...int) ([]Section, error) {
 	returnSection := struct {
-		Sections []Section `json:"section"`
+		Sections []Section `json:"sections"`
 	}{}
 	uri := "get_sections/" + strconv.Itoa(projectID)
 
