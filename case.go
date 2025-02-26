@@ -130,7 +130,6 @@ func (c *Client) GetCasesWithFilters(projectID, suiteID int, filters ...RequestF
 	}
 
 	returnCases := Cases{}
-	fmt.Println(uri)
 	err := c.sendRequest("GET", uri, nil, &returnCases)
 	return returnCases, err
 }
