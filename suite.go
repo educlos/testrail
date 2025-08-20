@@ -1,8 +1,6 @@
 package testrail
 
 import (
-	"errors"
-	"fmt"
 	"strconv"
 )
 
