@@ -12,19 +12,28 @@ import (
 func TestTimespanUnmarshal(t *testing.T) {
 	var testData = []struct{ json, stringDuration string }{
 		{`null`, "0s"},
-		{`"15s"`, "15s"},
-		{`"12m"`, "12m"},
-		{`"11h"`, "11h"},
-		{`"4h 5m 6s"`, "4h5m6s"},
+		{`"15s"`, "15s"},              // old format
+		{`"15sec"`, "15s"},            // current format
+		{`"12m"`, "12m"},              // old format
+		{`"12min"`, "12m"},            // current format
+		{`"11h"`, "11h"},              // old format
+		{`"11hr"`, "11h"},             // current format
+		{`"4h 5m 6s"`, "4h5m6s"},      // old format
+		{`"4hr 5min 6sec"`, "4h5m6s"}, // current format
 		{`"1d"`, "8h"},
-		{`"1w"`, "40h"},
-		{`"1d 2h"`, "8h2h"},
-		{`"1w 2d 3h"`, "40h16h3h"},
+		{`"1w"`, "40h"},                            // old format
+		{`"1wk"`, "40h"},                           // current format
+		{`"1d 2h"`, "8h2h"},                        // old format
+		{`"1d 2hr"`, "8h2h"},                       // current format
+		{`"1w 2d 3h"`, "40h16h3h"},                 // old format
+		{`"1wk 2d 3hr"`, "40h16h3h"},               // current format
+		{`"1w 2d 3h 4m 5s"`, "40h16h3h4m5s"},       // old format
+		{`"1wk 2d 3hr 4min 5sec"`, "40h16h3h4m5s"}, // current format
 	}
 
 	for _, data := range testData {
 		var results []Result
-		js := []byte(fmt.Sprintf(`[{"elapsed":%v}]`, data.json))
+		js := fmt.Appendf(nil, `[{"elapsed":%v}]`, data.json)
 		if err := json.Unmarshal(js, &results); err != nil {
 			t.Fatal(err)
 		}

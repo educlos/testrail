@@ -3,6 +3,7 @@ package testrail
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,8 @@ import (
 //
 // For a description, see:
 // http://docs.gurock.com/testrail-api2/reference-results
+
+var timespanRegex = regexp.MustCompile(`(\d+)([a-z]+)`)
 
 type timespan struct {
 	time.Duration
@@ -34,6 +37,9 @@ func TimespanFromDuration(duration time.Duration) *timespan {
 //   "1w" => "40h"
 //   "1d 2h" => "8h2h"
 //   "1w 2d 3h" => "40h16h3h"
+//
+// NOTE: as of July 2025, the API now uses the following units:
+//   "wk" (was "w"), "d", "hr" (was "h"), "min" (was "m"), "sec" (was "s")
 func (tsp *timespan) UnmarshalJSON(data []byte) error {
 	const (
 		// These are hardcoded in TestRail.
@@ -59,20 +65,34 @@ func (tsp *timespan) UnmarshalJSON(data []byte) error {
 		if len(p) < 2 {
 			return fmt.Errorf("%q: sequence is too short", p)
 		}
-		amount, err := strconv.Atoi(p[:len(p)-1])
+		matches := timespanRegex.FindStringSubmatch(p)
+		if len(matches) != 3 { // == 2 submatches
+			return fmt.Errorf("%q: bad timespan format", p)
+		}
+
+		amount, err := strconv.Atoi(matches[1])
 		if err != nil {
 			return fmt.Errorf("%q: cannot convert to int: %v", amount, err)
 		}
-		unit := p[len(p)-1]
+		
+		unit := matches[2]
 		switch unit {
-		case 'd':
-			unit = 'h'
+		// Updated API units -> ParseDuration conversions:
+		case "sec":
+			unit = "s"
+		case "min":
+			unit = "m"
+		case "hr":
+			unit = "h"
+		// TestRail -> ParseDuration conversions:
+		case "d":
+			unit = "h"
 			amount *= hoursPerDay
-		case 'w':
-			unit = 'h'
+		case "w", "wk":
+			unit = "h"
 			amount *= daysPerWeek * hoursPerDay
 		}
-		parts = append(parts, fmt.Sprintf("%v%c", amount, unit))
+		parts = append(parts, fmt.Sprintf("%v%s", amount, unit))
 	}
 
 	tsp.Duration, err = time.ParseDuration(strings.Join(parts, ""))

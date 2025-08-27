@@ -1,6 +1,8 @@
 package testrail
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // Suite represenst a Test Suite
 type Suite struct {
@@ -22,6 +24,21 @@ type SendableSuite struct {
 	Description string `json:"description,omitempty"`
 }
 
+// PaginatedSuites represents a Test Suites response
+// from the TestRail API (suites w/ pagination)
+type PaginatedSuites struct {
+	Offset int             `json:"offset"`
+	Limit  int             `json:"limit"`
+	Size   int             `json:"size"`
+	Suites []Suite         `json:"suites"`
+	Links  PaginationLinks `json:"_links"`
+}
+
+type PaginationLinks struct {
+	Next string `json:"next"`
+	Prev string `json:"prev"`
+}
+
 // GetSuite returns the suite suiteID
 func (c *Client) GetSuite(suiteID int) (Suite, error) {
 	returnSuite := Suite{}
@@ -29,11 +46,24 @@ func (c *Client) GetSuite(suiteID int) (Suite, error) {
 	return returnSuite, err
 }
 
-// GetSuites returns the list of suites on project projectID
+// GetSuites returns the list of suites on project projectID.
+// Pagination is handled internally (calling may result in 
+// multiple API requests).
 func (c *Client) GetSuites(projectID int) ([]Suite, error) {
-	returnSuite := []Suite{}
-	err := c.sendRequest("GET", "get_suites/"+strconv.Itoa(projectID), nil, &returnSuite)
-	return returnSuite, err
+	returnSuites := []Suite{}
+	url := "get_suites/" + strconv.Itoa(projectID)
+	for {
+		paginated := PaginatedSuites{}
+		err := c.sendRequest("GET", url, nil, &paginated)
+		if err != nil {
+			return nil, err
+		}
+		returnSuites = append(returnSuites, paginated.Suites...)
+		if paginated.Links.Next == "" {
+			return returnSuites, nil
+		}
+		url = paginated.Links.Next
+	}
 }
 
 // AddSuite creates a new suite on projectID and returns it
