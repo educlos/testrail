@@ -15,6 +15,8 @@ import (
 // For a description, see:
 // http://docs.gurock.com/testrail-api2/reference-results
 
+var timespanRegex = regexp.MustCompile(`(\d+)([a-z]+)`)
+
 type timespan struct {
 	time.Duration
 }
@@ -63,8 +65,7 @@ func (tsp *timespan) UnmarshalJSON(data []byte) error {
 		if len(p) < 2 {
 			return fmt.Errorf("%q: sequence is too short", p)
 		}
-		r := regexp.MustCompile(`(\d+)([a-z]+)`)
-		matches := r.FindStringSubmatch(p)
+		matches := timespanRegex.FindStringSubmatch(p)
 		if len(matches) != 3 { // == 2 submatches
 			return fmt.Errorf("%q: bad timespan format", p)
 		}
